@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/icons": "^4.8.3",
+    "@ant-design/icons": "^5.6.1",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
     "@types/react": "^17.0.90",
