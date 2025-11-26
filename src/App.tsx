@@ -2,7 +2,6 @@ import React from "react";
 import { Layout } from "antd";
 import CharacterList from "./components/CharacterList";
 import "antd/dist/antd.css";
-import "./styles/antd-overrides.css";
 
 const { Header, Content } = Layout;
 
