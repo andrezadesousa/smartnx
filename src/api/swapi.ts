@@ -1,17 +1,10 @@
+import type { Character } from "../types";
+
 export interface SwapiResponse<T> {
   count: number;
   next: string | null;
   previous: string | null;
   results: T[];
-}
-
-export interface Character {
-  name: string;
-  height: string;
-  mass: string;
-  gender: string;
-  birth_year: string;
-  url: string;
 }
 
 const BASE = "https://swapi.dev/api";
