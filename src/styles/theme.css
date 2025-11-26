@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap");
+
+:root {
+  --bg-900: #1f1b14;
+  --accent-700: #ad9d85;
+  --neutral-200: #e0dad1;
+  --neutral-100: #f5f3f0;
+  --white: #ffffff;
+
+  --body-font: "Playwrite DE Grund", cursive;
+}
+
+body {
+  background: var(--bg-900);
+  color: var(--neutral-100);
+  font-family: var(--body-font);
+  margin: 0;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+@media (max-width: 600px) {
+  .app-container {
+    padding: 8px;
+  }
+}
+
+.custom-theme .ant-input {
+  width: 100%;
+  max-width: 400px;
+}
+
+@media (max-width: 600px) {
+  .custom-theme .ant-input {
+    max-width: 100%;
+  }
+}

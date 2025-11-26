@@ -2,19 +2,20 @@ import React from "react";
 import { Layout } from "antd";
 import CharacterList from "./components/CharacterList";
 import "antd/dist/antd.css";
+import "./styles/antd-overrides.css";
 
 const { Header, Content } = Layout;
 
 function App() {
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Header style={{ color: "#fff", fontSize: 20 }}>
-        SWAPI - Personagens
-      </Header>
-      <Content style={{ padding: "24px" }}>
+    <div className="custom-theme app-container">
+      <header style={{ padding: 16 }}>
+        <h1 style={{ margin: 0 }}>SWAPI — Personagens</h1>
+      </header>
+      <main style={{ padding: 16 }}>
         <CharacterList />
-      </Content>
-    </Layout>
+      </main>
+    </div>
   );
 }
 
