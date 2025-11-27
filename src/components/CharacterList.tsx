@@ -10,6 +10,7 @@ import {
   Tag,
   Tooltip,
   Button,
+  Timeline,
 } from "antd";
 import { fetchCharacters } from "../api/swapi";
 import type { Character } from "../types";
@@ -28,6 +29,7 @@ import {
   ApartmentOutlined,
 } from "@ant-design/icons";
 import useIsMobile from "../hooks/useUsMobile";
+import { fetchResourceName } from "../utils/fetchResourceName";
 
 const { Search } = Input;
 
@@ -38,6 +40,11 @@ export default function CharacterList() {
   const [total, setTotal] = useState(0);
   const [searchText, setSearchText] = useState("");
   const isMobile = useIsMobile(600);
+  const [resolvedHomeworld, setResolvedHomeworld] = useState<string>("");
+  const [resolvedFilms, setResolvedFilms] = useState<string[]>([]);
+  const [resolvedSpecies, setResolvedSpecies] = useState<string[]>([]);
+  const [resolvedVehicles, setResolvedVehicles] = useState<string[]>([]);
+  const [resolvedStarships, setResolvedStarships] = useState<string[]>([]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
@@ -62,6 +69,52 @@ export default function CharacterList() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (!selectedCharacter) return;
+
+    const loadData = async () => {
+      // 🌍 planeta
+      if (selectedCharacter.homeworld) {
+        const name = await fetchResourceName(selectedCharacter.homeworld);
+        setResolvedHomeworld(name);
+      }
+
+      // 🎬 filmes
+      if (selectedCharacter.films?.length) {
+        const names = await Promise.all(
+          selectedCharacter.films.map((url) => fetchResourceName(url))
+        );
+        setResolvedFilms(names);
+      }
+
+      // 🧬 espécies
+      if (selectedCharacter.species?.length) {
+        const names = await Promise.all(
+          selectedCharacter.species.map((url) => fetchResourceName(url))
+        );
+        setResolvedSpecies(names);
+      }
+
+      // 🚗 veículos
+      if (selectedCharacter.vehicles?.length) {
+        const names = await Promise.all(
+          selectedCharacter.vehicles.map((url) => fetchResourceName(url))
+        );
+        setResolvedVehicles(names);
+      }
+
+      // 🚀 naves
+      if (selectedCharacter.starships?.length) {
+        const names = await Promise.all(
+          selectedCharacter.starships.map((url) => fetchResourceName(url))
+        );
+        setResolvedStarships(names);
+      }
+    };
+
+    loadData();
+  }, [selectedCharacter]);
 
   const openDetails = (character: Character) => {
     setSelectedCharacter(character);
@@ -209,7 +262,7 @@ export default function CharacterList() {
 
               <p>
                 <GlobalOutlined /> <strong>Mundo Natal:</strong>{" "}
-                {selectedCharacter.homeworld}
+                {resolvedHomeworld || "Desconhecido"}
               </p>
             </div>
 
@@ -220,7 +273,7 @@ export default function CharacterList() {
                 <VideoCameraOutlined /> Filmes
               </h3>
               <ul className="drawer-list">
-                {selectedCharacter.films.map((f) => (
+                {resolvedFilms.map((f) => (
                   <li key={f}>{f}</li>
                 ))}
               </ul>
@@ -234,7 +287,7 @@ export default function CharacterList() {
               </h3>
               {selectedCharacter.vehicles.length > 0 ? (
                 <ul className="drawer-list">
-                  {selectedCharacter.vehicles.map((v) => (
+                  {resolvedVehicles.map((v) => (
                     <li key={v}>{v}</li>
                   ))}
                 </ul>
@@ -251,7 +304,7 @@ export default function CharacterList() {
               </h3>
               {selectedCharacter.starships.length > 0 ? (
                 <ul className="drawer-list">
-                  {selectedCharacter.starships.map((s) => (
+                  {resolvedStarships.map((s) => (
                     <li key={s}>{s}</li>
                   ))}
                 </ul>
@@ -264,18 +317,31 @@ export default function CharacterList() {
 
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <ClockCircleOutlined /> Datas
+                <ApartmentOutlined /> Espécies
               </h3>
+              {resolvedSpecies.length > 0 ? (
+                resolvedSpecies.map((sp) => <li key={sp}>{sp}</li>)
+              ) : (
+                <p>Sem espécies cadastradas.</p>
+              )}
+            </div>
 
-              <p>
-                <ClockCircleOutlined /> <strong>Criado Em:</strong>{" "}
-                {selectedCharacter.created}
-              </p>
+            <div className="divider" />
 
-              <p>
-                <ClockCircleOutlined /> <strong>Editado Em:</strong>{" "}
-                {selectedCharacter.edited}
-              </p>
+            <div className="drawer-block">
+              <h3 className="drawer-title">
+                <ClockCircleOutlined style={{ marginRight: 8 }} />
+                Linha do Tempo
+              </h3>
+              <Timeline style={{ marginLeft: 20, marginTop: 20 }}>
+                <Timeline.Item color="blue">
+                  <strong>Criado Em:</strong> {selectedCharacter.created}
+                </Timeline.Item>
+                <Timeline.Item color="blue">
+                  <strong>Editado Em:</strong>
+                  {selectedCharacter.edited}
+                </Timeline.Item>
+              </Timeline>
             </div>
           </div>
         )}
