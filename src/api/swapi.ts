@@ -9,6 +9,10 @@ export interface SwapiResponse<T> {
 
 const BASE = "https://swapi.dev/api";
 
+fetch("https://swapi.dev/api/people")
+  .then((res) => res.json())
+  .then((data) => console.log(data));
+
 export async function fetchCharacters(
   page = 1,
   search = ""
