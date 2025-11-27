@@ -20,7 +20,6 @@ body {
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px;
 }
 
 @media (max-width: 600px) {
@@ -124,4 +123,42 @@ body {
   .custom-theme .ant-table {
     font-size: 14px;
   }
+}
+
+.drawer-block {
+  margin-bottom: 18px;
+  padding: 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--accent-700);
+  box-shadow: 0 0 8px rgba(173, 157, 133, 0.55);
+}
+
+.drawer-title {
+  margin-bottom: 8px;
+  font-size: 17px;
+  font-family: var(--body-font);
+  color: var(--accent-700);
+  text-shadow: 0 0 8px rgba(173, 157, 133, 0.8);
+}
+
+.drawer-list {
+  padding-left: 18px;
+  list-style: none;
+}
+
+.drawer-list li {
+  margin: 3px 0;
+}
+
+.divider {
+  margin-top: 12px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--accent-700),
+    transparent
+  );
+  box-shadow: 0 0 6px rgba(173, 157, 133, 0.7);
 }
