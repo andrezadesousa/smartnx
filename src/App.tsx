@@ -13,26 +13,8 @@ function App() {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-          overflow: "hidden",
-          background: "black",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <img
-          src="/loading.gif"
-          alt="Loading"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        />
+      <div className="loading-screen" role="status" aria-live="polite">
+        <img src="/loading.gif" alt="Loading" className="loading-image" />
       </div>
     );
   }
@@ -40,7 +22,7 @@ function App() {
   return (
     <div className="custom-theme">
       <div className="app-container">
-        <main style={{ padding: 16 }}>
+        <main className="main-content">
           <CharacterList />
         </main>
       </div>
