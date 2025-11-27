@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Row, Col, Pagination, Card, Spin, Drawer } from "antd";
+import {
+  Input,
+  Row,
+  Col,
+  Pagination,
+  Card,
+  Spin,
+  Drawer,
+  Tag,
+  Tooltip,
+  Button,
+} from "antd";
 import { fetchCharacters } from "../api/swapi";
 import type { Character } from "../types";
 import {
@@ -16,6 +27,7 @@ import {
   ClockCircleOutlined,
   ApartmentOutlined,
 } from "@ant-design/icons";
+import useIsMobile from "../hooks/useUsMobile";
 
 const { Search } = Input;
 
@@ -25,6 +37,7 @@ export default function CharacterList() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [searchText, setSearchText] = useState("");
+  const isMobile = useIsMobile(600);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
@@ -50,146 +63,138 @@ export default function CharacterList() {
     }
   }
 
-  const showDetails = (record: Character) => {
-    setSelectedCharacter(record);
+  const openDetails = (character: Character) => {
+    setSelectedCharacter(character);
     setDrawerOpen(true);
   };
 
-  const columns = [
-    { title: "Nome", dataIndex: "name", key: "name" },
-    { title: "Ano de Nascimento", dataIndex: "birth_year", key: "birth_year" },
-    { title: "Gênero", dataIndex: "gender", key: "gender" },
-
-    {
-      title: "Detalhes",
-      key: "details",
-      render: (_: any, record: Character) => (
-        <EyeOutlined
-          style={{ cursor: "pointer", fontSize: 18 }}
-          onClick={() => showDetails(record)}
-        />
-      ),
-    },
-  ];
-
   return (
     <>
-      <Card title="Star Wars — Personagens" style={{ margin: 16 }}>
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12}>
-            <Search
-              placeholder="Filtrar por nome"
-              enterButton
-              allowClear
-              onSearch={(value) => {
-                setPage(1);
-                setSearchText(value.trim());
-              }}
-            />
-          </Col>
+      <Card title="Star Wars — Personagens" className="card-wrapper">
+        <div>
+          <Search
+            placeholder="Filtrar por nome"
+            enterButton
+            allowClear
+            onSearch={(value) => {
+              setPage(1);
+              setSearchText(value.trim());
+            }}
+            className="search-input"
+          />
+        </div>
 
-          <Col xs={24}>
-            {loading ? (
-              <div style={{ textAlign: "center", padding: 40 }}>
-                <Spin />
-              </div>
-            ) : (
-              <>
-                <Table
-                  dataSource={data}
-                  columns={columns}
-                  rowKey="url"
-                  pagination={false}
-                  scroll={{ x: "max-content" }}
-                  size="middle"
-                />
+        {loading ? (
+          <div className="loading-spinner" aria-busy>
+            <div style={{ textAlign: "center", padding: 40 }}>
+              <Spin />
+            </div>
+          </div>
+        ) : (
+          <>
+            <Row gutter={[16, 16]}>
+              {data.map((character) => (
+                <Col key={character.url} xs={24} sm={12} md={8} lg={6} xl={6}>
+                  <Card
+                    hoverable
+                    className="character-card"
+                    title={<div className="card-title">{character.name}</div>}
+                    actions={[
+                      isMobile ? (
+                        <EyeOutlined
+                          key="details-mobile"
+                          onClick={() => openDetails(character)}
+                        />
+                      ) : (
+                        <Tooltip
+                          title="Ver detalhes"
+                          placement="top"
+                          key="details-desktop"
+                        >
+                          <Button
+                            type="primary"
+                            onClick={() => openDetails(character)}
+                            size="small"
+                          >
+                            Detalhes
+                          </Button>
+                        </Tooltip>
+                      ),
+                    ]}
+                  >
+                    <div className="card-content">
+                      <p>
+                        <CalendarOutlined /> <strong>Nascimento:</strong>{" "}
+                        {character.birth_year}
+                      </p>
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: 16,
-                  }}
-                >
-                  <Pagination
-                    current={page}
-                    pageSize={pageSize}
-                    total={total}
-                    onChange={(p) => setPage(p)}
-                    showSizeChanger={false}
-                  />
-                </div>
-              </>
-            )}
-          </Col>
-        </Row>
+                      <p>
+                        <UserOutlined /> <strong>Gênero:</strong>{" "}
+                        {character.gender}
+                      </p>
+
+                      <Tag color="gold">Altura: {character.height} cm</Tag>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+
+            <div className="pagination-wrapper">
+              <Pagination
+                current={page}
+                pageSize={pageSize}
+                total={total}
+                onChange={(p) => setPage(p)}
+                showSizeChanger={false}
+              />
+            </div>
+          </>
+        )}
       </Card>
 
-      {/* DRAWER */}
       <Drawer
-        title={
-          <span
-            style={{
-              fontFamily: "var(--body-font)",
-              color: "var(--accent-700)",
-              fontSize: 20,
-            }}
-          >
-            {selectedCharacter?.name}
-          </span>
-        }
+        title={<span className="drawer-title">{selectedCharacter?.name}</span>}
         placement="left"
         width={360}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        bodyStyle={{
-          background: "var(--bg-900)",
-          color: "var(--neutral-100)",
-          fontFamily: "var(--body-font)",
-        }}
+        className="character-drawer"
       >
         {selectedCharacter && (
-          <div style={{ paddingBottom: 20 }}>
-            {/* BLOCO 1 — CARACTERÍSTICAS FÍSICAS */}
+          <div className="drawer-content">
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <ColumnHeightOutlined style={{ marginRight: 8 }} />
-                Características
+                <ColumnHeightOutlined /> Características
               </h3>
 
               <p>
                 <VerticalAlignMiddleOutlined /> <strong>Altura:</strong>{" "}
                 {selectedCharacter.height} cm
               </p>
-
               <p>
                 <ColumnHeightOutlined /> <strong>Peso:</strong>{" "}
                 {selectedCharacter.mass} kg
               </p>
-
               <p>
                 <UserOutlined /> <strong>Cor do Cabelo:</strong>{" "}
                 {selectedCharacter.hair_color}
               </p>
-
               <p>
                 <SkinOutlined /> <strong>Cor da Pele:</strong>{" "}
                 {selectedCharacter.skin_color}
               </p>
-
               <p>
                 <BgColorsOutlined /> <strong>Cor dos Olhos:</strong>{" "}
                 {selectedCharacter.eye_color}
               </p>
-
-              <div className="divider" />
             </div>
 
-            {/* BLOCO 2 — IDENTIDADE */}
+            <div className="divider" />
+
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <UserOutlined style={{ marginRight: 8 }} />
-                Identidade
+                <UserOutlined /> Identidade
               </h3>
 
               <p>
@@ -206,71 +211,60 @@ export default function CharacterList() {
                 <GlobalOutlined /> <strong>Mundo Natal:</strong>{" "}
                 {selectedCharacter.homeworld}
               </p>
-
-              <div className="divider" />
             </div>
 
-            {/* BLOCO 3 — FILMES */}
+            <div className="divider" />
+
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <VideoCameraOutlined style={{ marginRight: 8 }} />
-                Filmes
+                <VideoCameraOutlined /> Filmes
               </h3>
-
               <ul className="drawer-list">
                 {selectedCharacter.films.map((f) => (
-                  <li key={f}>• {f}</li>
+                  <li key={f}>{f}</li>
                 ))}
               </ul>
-
-              <div className="divider" />
             </div>
 
-            {/* BLOCO 4 — VEÍCULOS */}
+            <div className="divider" />
+
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <CarOutlined style={{ marginRight: 8 }} />
-                Veículos
+                <CarOutlined /> Veículos
               </h3>
-
               {selectedCharacter.vehicles.length > 0 ? (
                 <ul className="drawer-list">
                   {selectedCharacter.vehicles.map((v) => (
-                    <li key={v}>• {v}</li>
+                    <li key={v}>{v}</li>
                   ))}
                 </ul>
               ) : (
                 <p>Nenhum veículo registrado.</p>
               )}
-
-              <div className="divider" />
             </div>
 
-            {/* BLOCO 5 — NAVES */}
+            <div className="divider" />
+
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <ApartmentOutlined style={{ marginRight: 8 }} />
-                Naves
+                <ApartmentOutlined /> Naves
               </h3>
-
               {selectedCharacter.starships.length > 0 ? (
                 <ul className="drawer-list">
                   {selectedCharacter.starships.map((s) => (
-                    <li key={s}>• {s}</li>
+                    <li key={s}>{s}</li>
                   ))}
                 </ul>
               ) : (
                 <p>Nenhuma nave registrada.</p>
               )}
-
-              <div className="divider" />
             </div>
 
-            {/* BLOCO 6 — DATAS */}
+            <div className="divider" />
+
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <ClockCircleOutlined style={{ marginRight: 8 }} />
-                Datas
+                <ClockCircleOutlined /> Datas
               </h3>
 
               <p>
