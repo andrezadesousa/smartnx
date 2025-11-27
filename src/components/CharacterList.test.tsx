@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import CharacterList from "./CharacterList";
 
 const mockResponse = {
@@ -18,25 +18,27 @@ const mockResponse = {
   ],
 };
 
+const mockFetch = () =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve(mockResponse),
+  });
+
 beforeEach(() => {
-  // @ts-ignore
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve(mockResponse),
-    })
-  );
+  jest.spyOn(global, "fetch").mockImplementation(mockFetch as any);
 });
 
 afterEach(() => {
   jest.restoreAllMocks();
 });
 
-test("renderiza lista de personagens e mostra Luke", async () => {
+test("renderiza lista de personagens e mostra Luke Skywalker", async () => {
   render(<CharacterList />);
-  expect(screen.getByPlaceholderText(/Filtrar por nome/i)).toBeInTheDocument();
-  // aguarda o fetch e a tabela aparecer
-  await waitFor(() =>
-    expect(screen.getByText("Luke Skywalker")).toBeInTheDocument()
-  );
+
+  // já está presente imediatamente
+  expect(screen.getByPlaceholderText(/filtrar por nome/i)).toBeInTheDocument();
+
+  // aguarda a requisição e renderização — sem waitFor!
+  const luke = await screen.findByText(/luke skywalker/i);
+  expect(luke).toBeInTheDocument();
 });

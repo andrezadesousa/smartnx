@@ -127,90 +127,162 @@ export default function CharacterList() {
 
       {/* DRAWER */}
       <Drawer
-        title={selectedCharacter?.name}
+        title={
+          <span
+            style={{
+              fontFamily: "var(--body-font)",
+              color: "var(--accent-700)",
+              fontSize: 20,
+            }}
+          >
+            {selectedCharacter?.name}
+          </span>
+        }
         placement="left"
-        width={340}
+        width={360}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        bodyStyle={{
+          background: "var(--bg-900)",
+          color: "var(--neutral-100)",
+          fontFamily: "var(--body-font)",
+        }}
       >
         {selectedCharacter && (
-          <div style={{ lineHeight: "28px" }}>
-            <p>
-              <VerticalAlignMiddleOutlined /> <strong>Altura:</strong>{" "}
-              {selectedCharacter.height}
-            </p>
+          <div style={{ paddingBottom: 20 }}>
+            {/* BLOCO 1 — CARACTERÍSTICAS FÍSICAS */}
+            <div className="drawer-block">
+              <h3 className="drawer-title">
+                <ColumnHeightOutlined style={{ marginRight: 8 }} />
+                Características
+              </h3>
 
-            <p>
-              <ColumnHeightOutlined /> <strong>Peso:</strong>{" "}
-              {selectedCharacter.mass}
-            </p>
+              <p>
+                <VerticalAlignMiddleOutlined /> <strong>Altura:</strong>{" "}
+                {selectedCharacter.height} cm
+              </p>
 
-            <p>
-              <SkinOutlined /> <strong>Cor do Cabelo:</strong>{" "}
-              {selectedCharacter.hair_color}
-            </p>
+              <p>
+                <ColumnHeightOutlined /> <strong>Peso:</strong>{" "}
+                {selectedCharacter.mass} kg
+              </p>
 
-            <p>
-              <BgColorsOutlined /> <strong>Cor da Pele:</strong>{" "}
-              {selectedCharacter.skin_color}
-            </p>
+              <p>
+                <UserOutlined /> <strong>Cor do Cabelo:</strong>{" "}
+                {selectedCharacter.hair_color}
+              </p>
 
-            <p>
-              <EyeOutlined /> <strong>Cor dos Olhos:</strong>{" "}
-              {selectedCharacter.eye_color}
-            </p>
+              <p>
+                <SkinOutlined /> <strong>Cor da Pele:</strong>{" "}
+                {selectedCharacter.skin_color}
+              </p>
 
-            <p>
-              <CalendarOutlined /> <strong>Nascimento:</strong>{" "}
-              {selectedCharacter.birth_year}
-            </p>
+              <p>
+                <BgColorsOutlined /> <strong>Cor dos Olhos:</strong>{" "}
+                {selectedCharacter.eye_color}
+              </p>
 
-            <p>
-              <UserOutlined /> <strong>Gênero:</strong>{" "}
-              {selectedCharacter.gender}
-            </p>
+              <div className="divider" />
+            </div>
 
-            <p>
-              <GlobalOutlined /> <strong>Mundo Natal:</strong>{" "}
-              {selectedCharacter.homeworld}
-            </p>
+            {/* BLOCO 2 — IDENTIDADE */}
+            <div className="drawer-block">
+              <h3 className="drawer-title">
+                <UserOutlined style={{ marginRight: 8 }} />
+                Identidade
+              </h3>
 
-            <p>
-              <VideoCameraOutlined /> <strong>Filmes:</strong>
-            </p>
-            <ul>
-              {selectedCharacter.films.map((f) => (
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
+              <p>
+                <CalendarOutlined /> <strong>Nascimento:</strong>{" "}
+                {selectedCharacter.birth_year}
+              </p>
 
-            <p>
-              <CarOutlined /> <strong>Veículos:</strong>
-            </p>
-            <ul>
-              {selectedCharacter.vehicles.map((v) => (
-                <li key={v}>{v}</li>
-              ))}
-            </ul>
+              <p>
+                <UserOutlined /> <strong>Gênero:</strong>{" "}
+                {selectedCharacter.gender}
+              </p>
 
-            <p>
-              <ApartmentOutlined /> <strong>Naves:</strong>
-            </p>
-            <ul>
-              {selectedCharacter.starships.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ul>
+              <p>
+                <GlobalOutlined /> <strong>Mundo Natal:</strong>{" "}
+                {selectedCharacter.homeworld}
+              </p>
 
-            <p>
-              <ClockCircleOutlined /> <strong>Criado Em:</strong>{" "}
-              {selectedCharacter.created}
-            </p>
+              <div className="divider" />
+            </div>
 
-            <p>
-              <ClockCircleOutlined /> <strong>Editado Em:</strong>{" "}
-              {selectedCharacter.edited}
-            </p>
+            {/* BLOCO 3 — FILMES */}
+            <div className="drawer-block">
+              <h3 className="drawer-title">
+                <VideoCameraOutlined style={{ marginRight: 8 }} />
+                Filmes
+              </h3>
+
+              <ul className="drawer-list">
+                {selectedCharacter.films.map((f) => (
+                  <li key={f}>• {f}</li>
+                ))}
+              </ul>
+
+              <div className="divider" />
+            </div>
+
+            {/* BLOCO 4 — VEÍCULOS */}
+            <div className="drawer-block">
+              <h3 className="drawer-title">
+                <CarOutlined style={{ marginRight: 8 }} />
+                Veículos
+              </h3>
+
+              {selectedCharacter.vehicles.length > 0 ? (
+                <ul className="drawer-list">
+                  {selectedCharacter.vehicles.map((v) => (
+                    <li key={v}>• {v}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Nenhum veículo registrado.</p>
+              )}
+
+              <div className="divider" />
+            </div>
+
+            {/* BLOCO 5 — NAVES */}
+            <div className="drawer-block">
+              <h3 className="drawer-title">
+                <ApartmentOutlined style={{ marginRight: 8 }} />
+                Naves
+              </h3>
+
+              {selectedCharacter.starships.length > 0 ? (
+                <ul className="drawer-list">
+                  {selectedCharacter.starships.map((s) => (
+                    <li key={s}>• {s}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Nenhuma nave registrada.</p>
+              )}
+
+              <div className="divider" />
+            </div>
+
+            {/* BLOCO 6 — DATAS */}
+            <div className="drawer-block">
+              <h3 className="drawer-title">
+                <ClockCircleOutlined style={{ marginRight: 8 }} />
+                Datas
+              </h3>
+
+              <p>
+                <ClockCircleOutlined /> <strong>Criado Em:</strong>{" "}
+                {selectedCharacter.created}
+              </p>
+
+              <p>
+                <ClockCircleOutlined /> <strong>Editado Em:</strong>{" "}
+                {selectedCharacter.edited}
+              </p>
+            </div>
           </div>
         )}
       </Drawer>
