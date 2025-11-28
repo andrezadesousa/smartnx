@@ -260,7 +260,7 @@ export default function CharacterList() {
                 {selectedCharacter.gender}
               </p>
 
-              <p>
+              <p data-testid="homeworld">
                 <GlobalOutlined /> <strong>Mundo Natal:</strong>{" "}
                 {resolvedHomeworld || "Desconhecido"}
               </p>
