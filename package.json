@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
+    "@react-spring/web": "^10.0.3",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
     "@types/react": "^17.0.90",

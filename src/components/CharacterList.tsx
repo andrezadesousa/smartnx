@@ -5,7 +5,6 @@ import {
   Col,
   Pagination,
   Card,
-  Spin,
   Drawer,
   Tag,
   Tooltip,
@@ -20,31 +19,25 @@ import type { Character } from "../types";
 import useIsMobile from "../hooks/useUsMobile";
 import { fetchResourceName } from "../utils/fetchResourceName";
 
-// 🔥 Ícones Ant Design (mantidos)
+// ⭐ Lucide Icons
 import {
-  VerticalAlignMiddleOutlined,
-  ColumnHeightOutlined,
-  SkinOutlined,
-  BgColorsOutlined,
-  EyeOutlined,
-  CalendarOutlined,
-  UserOutlined,
-  GlobalOutlined,
-  VideoCameraOutlined,
-  CarOutlined,
-  ClockCircleOutlined,
-  ApartmentOutlined,
-} from "@ant-design/icons";
-
-// 🔥 Novos ícones modernos (lucide-react)
-import {
-  User as UserIcon,
+  User,
   Globe,
   Film,
   Car,
   Ship,
   Sparkles,
+  Ruler,
+  Scale,
+  Palette,
+  Eye,
+  Calendar,
+  Badge,
+  Clock,
+  Users,
+  Shapes,
 } from "lucide-react";
+import { animated, useSpring } from "@react-spring/web";
 
 const { Search } = Input;
 
@@ -89,13 +82,12 @@ export default function CharacterList() {
     }
   }
 
-  // 🔥 Abrir Drawer
   const openDetails = (character: Character) => {
     setSelectedCharacter(character);
     setDrawerOpen(true);
   };
 
-  // 🔥 Resolver nomes quando Drawer abre
+  // Carregar informações do drawer
   useEffect(() => {
     if (!selectedCharacter) return;
 
@@ -103,36 +95,41 @@ export default function CharacterList() {
       setDrawerLoading(true);
 
       if (selectedCharacter.homeworld) {
-        const name = await fetchResourceName(selectedCharacter.homeworld);
-        setResolvedHomeworld(name);
+        setResolvedHomeworld(
+          await fetchResourceName(selectedCharacter.homeworld)
+        );
       }
 
       if (selectedCharacter.films?.length) {
-        const names = await Promise.all(
-          selectedCharacter.films.map((url) => fetchResourceName(url))
+        setResolvedFilms(
+          await Promise.all(
+            selectedCharacter.films.map((url) => fetchResourceName(url))
+          )
         );
-        setResolvedFilms(names);
       }
 
       if (selectedCharacter.species?.length) {
-        const names = await Promise.all(
-          selectedCharacter.species.map((url) => fetchResourceName(url))
+        setResolvedSpecies(
+          await Promise.all(
+            selectedCharacter.species.map((url) => fetchResourceName(url))
+          )
         );
-        setResolvedSpecies(names);
       }
 
       if (selectedCharacter.vehicles?.length) {
-        const names = await Promise.all(
-          selectedCharacter.vehicles.map((url) => fetchResourceName(url))
+        setResolvedVehicles(
+          await Promise.all(
+            selectedCharacter.vehicles.map((url) => fetchResourceName(url))
+          )
         );
-        setResolvedVehicles(names);
       }
 
       if (selectedCharacter.starships?.length) {
-        const names = await Promise.all(
-          selectedCharacter.starships.map((url) => fetchResourceName(url))
+        setResolvedStarships(
+          await Promise.all(
+            selectedCharacter.starships.map((url) => fetchResourceName(url))
+          )
         );
-        setResolvedStarships(names);
       }
 
       setDrawerLoading(false);
@@ -141,10 +138,24 @@ export default function CharacterList() {
     loadData();
   }, [selectedCharacter]);
 
+  // ⭐ ANIMAÇÃO: Fade + Slide Up (Drawer Content)
+  const drawerAnimation = useSpring({
+    opacity: drawerOpen ? 1 : 0,
+    transform: drawerOpen ? "translateY(0px)" : "translateY(20px)",
+    config: { tension: 220, friction: 22 },
+  });
+
+  // ⭐ ANIMAÇÃO: Fade-in da grid após loading
+  const gridAnimation = useSpring({
+    opacity: loading ? 0 : 1,
+    transform: loading ? "translateY(10px)" : "translateY(0)",
+    config: { tension: 210, friction: 20 },
+  });
+
   return (
     <>
       <Card title="Star Wars — Personagens" className="card-wrapper">
-        {/* 🔥 Search Dinâmico */}
+        {/* 🔍 SEARCH */}
         <Search
           placeholder="Filtrar por nome"
           enterButton
@@ -161,7 +172,7 @@ export default function CharacterList() {
           className="search-input"
         />
 
-        {/* 🔥 Skeleton dos Cards */}
+        {/* SKELETON */}
         {loading && (
           <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
             {Array.from({ length: 10 }).map((_, i) => (
@@ -174,9 +185,8 @@ export default function CharacterList() {
           </Row>
         )}
 
-        {/* Conteúdo quando não está carregando */}
         {!loading && (
-          <>
+          <animated.div style={gridAnimation}>
             <Row gutter={[16, 16]}>
               {data.map((character) => (
                 <Col key={character.url} xs={24} sm={12} md={8} lg={6} xl={6}>
@@ -186,20 +196,18 @@ export default function CharacterList() {
                     title={<div className="card-title">{character.name}</div>}
                     actions={[
                       isMobile ? (
-                        <EyeOutlined
+                        <Eye
                           key="details-mobile"
+                          size={20}
                           onClick={() => openDetails(character)}
+                          style={{ cursor: "pointer" }}
                         />
                       ) : (
-                        <Tooltip
-                          title="Ver detalhes"
-                          placement="top"
-                          key="details-desktop"
-                        >
+                        <Tooltip title="Ver detalhes" placement="top" key="d1">
                           <Button
                             type="primary"
-                            onClick={() => openDetails(character)}
                             size="small"
+                            onClick={() => openDetails(character)}
                           >
                             Detalhes
                           </Button>
@@ -209,12 +217,12 @@ export default function CharacterList() {
                   >
                     <div className="card-content">
                       <p>
-                        <CalendarOutlined /> <strong>Nascimento:</strong>{" "}
+                        <Calendar size={14} /> <strong>Nascimento:</strong>{" "}
                         {character.birth_year}
                       </p>
 
                       <p>
-                        <UserOutlined /> <strong>Gênero:</strong>{" "}
+                        <Users size={14} /> <strong>Gênero:</strong>{" "}
                         {character.gender}
                       </p>
 
@@ -234,11 +242,11 @@ export default function CharacterList() {
                 showSizeChanger={false}
               />
             </div>
-          </>
+          </animated.div>
         )}
       </Card>
 
-      {/* === 🔥 DRAWER === */}
+      {/* ================= DRAWER ================ */}
       <Drawer
         title={
           <span className="drawer-title">
@@ -252,69 +260,69 @@ export default function CharacterList() {
         onClose={() => setDrawerOpen(false)}
         className="character-drawer"
       >
-        {/* 🔥 Skeleton dentro do Drawer */}
         {drawerLoading && (
           <div style={{ padding: 20 }}>
             <Skeleton active paragraph={{ rows: 10 }} />
           </div>
         )}
 
-        {/* Conteúdo real */}
         {!drawerLoading && selectedCharacter && (
-          <div className="drawer-content">
-            {/* 🔥 Manter TODA a estrutura ORIGINAL */}
+          <animated.div style={drawerAnimation} className="drawer-content">
+            {/* === Características === */}
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <ColumnHeightOutlined /> Características
+                <Shapes size={16} /> Características
               </h3>
 
               <p>
-                <VerticalAlignMiddleOutlined /> <strong>Altura:</strong>{" "}
+                <Ruler size={14} /> <strong>Altura:</strong>{" "}
                 {selectedCharacter.height} cm
               </p>
               <p>
-                <ColumnHeightOutlined /> <strong>Peso:</strong>{" "}
+                <Scale size={14} /> <strong>Peso:</strong>{" "}
                 {selectedCharacter.mass} kg
               </p>
               <p>
-                <UserOutlined /> <strong>Cor do Cabelo:</strong>{" "}
+                <User size={14} /> <strong>Cabelo:</strong>{" "}
                 {selectedCharacter.hair_color}
               </p>
               <p>
-                <SkinOutlined /> <strong>Cor da Pele:</strong>{" "}
+                <Palette size={14} /> <strong>Pele:</strong>{" "}
                 {selectedCharacter.skin_color}
               </p>
               <p>
-                <BgColorsOutlined /> <strong>Cor dos Olhos:</strong>{" "}
+                <Palette size={14} /> <strong>Olhos:</strong>{" "}
                 {selectedCharacter.eye_color}
               </p>
             </div>
 
             <div className="divider" />
 
+            {/* === Identidade === */}
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <UserIcon size={16} /> Identidade
+                <Badge size={16} /> Identidade
               </h3>
 
               <p>
-                <CalendarOutlined /> <strong>Nascimento:</strong>{" "}
+                <Calendar size={14} /> <strong>Nascimento:</strong>{" "}
                 {selectedCharacter.birth_year}
               </p>
 
               <p>
-                <UserOutlined /> <strong>Gênero:</strong>{" "}
+                <Users size={14} /> <strong>Gênero:</strong>{" "}
                 {selectedCharacter.gender}
               </p>
 
               <p data-testid="homeworld">
-                <Globe size={16} /> <strong>Mundo Natal:</strong>{" "}
+                <Globe size={14} /> <strong>Mundo Natal:</strong>{" "}
                 {resolvedHomeworld || "Desconhecido"}
               </p>
             </div>
 
             <div className="divider" />
 
+            {/* === Filmes === */}
             <div className="drawer-block">
               <h3 className="drawer-title">
                 <Film size={16} /> Filmes
@@ -328,11 +336,12 @@ export default function CharacterList() {
 
             <div className="divider" />
 
+            {/* === Veículos === */}
             <div className="drawer-block">
               <h3 className="drawer-title">
                 <Car size={16} /> Veículos
               </h3>
-              {resolvedVehicles.length > 0 ? (
+              {resolvedVehicles.length ? (
                 <ul className="drawer-list">
                   {resolvedVehicles.map((v) => (
                     <li key={v}>{v}</li>
@@ -345,11 +354,12 @@ export default function CharacterList() {
 
             <div className="divider" />
 
+            {/* === Naves === */}
             <div className="drawer-block">
               <h3 className="drawer-title">
                 <Ship size={16} /> Naves
               </h3>
-              {resolvedStarships.length > 0 ? (
+              {resolvedStarships.length ? (
                 <ul className="drawer-list">
                   {resolvedStarships.map((s) => (
                     <li key={s}>{s}</li>
@@ -362,12 +372,17 @@ export default function CharacterList() {
 
             <div className="divider" />
 
+            {/* === Espécies === */}
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <ApartmentOutlined /> Espécies
+                <Users size={16} /> Espécies
               </h3>
-              {resolvedSpecies.length > 0 ? (
-                resolvedSpecies.map((sp) => <li key={sp}>{sp}</li>)
+              {resolvedSpecies.length ? (
+                <ul className="drawer-list">
+                  {resolvedSpecies.map((sp) => (
+                    <li key={sp}>{sp}</li>
+                  ))}
+                </ul>
               ) : (
                 <p>Sem espécies cadastradas.</p>
               )}
@@ -375,9 +390,10 @@ export default function CharacterList() {
 
             <div className="divider" />
 
+            {/* === Timeline === */}
             <div className="drawer-block">
               <h3 className="drawer-title">
-                <ClockCircleOutlined style={{ marginRight: 8 }} />
+                <Clock size={16} style={{ marginRight: 8 }} />
                 Linha do Tempo
               </h3>
               <Timeline style={{ marginLeft: 20, marginTop: 20 }}>
@@ -385,12 +401,11 @@ export default function CharacterList() {
                   <strong>Criado Em:</strong> {selectedCharacter.created}
                 </Timeline.Item>
                 <Timeline.Item color="blue">
-                  <strong>Editado Em:</strong>
-                  {selectedCharacter.edited}
+                  <strong>Editado Em:</strong> {selectedCharacter.edited}
                 </Timeline.Item>
               </Timeline>
             </div>
-          </div>
+          </animated.div>
         )}
       </Drawer>
     </>
