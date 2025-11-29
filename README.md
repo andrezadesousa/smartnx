@@ -10,7 +10,7 @@ Uma aplicação React moderna e responsiva que lista personagens do universo Sta
 
 ## ✨ Características
 
-- 🎨 **Design System Completo** - Paleta de cores inspirada em Star Wars com variáveis CSS customizáveis
+- 🎨 **Design System Completo** - Paleta de cores com variáveis CSS customizáveis
 - 📱 **100% Responsivo** - Funciona perfeitamente em dispositivos mobile, tablet e desktop
 - 🔍 **Busca em Tempo Real** - Filtre personagens pelo nome com interface intuitiva
 - 📄 **Paginação** - Navegação eficiente entre páginas (10 registros por vez)
@@ -33,7 +33,7 @@ Uma aplicação React moderna e responsiva que lista personagens do universo Sta
 
 ## 📦 Estrutura do Projeto
 
-\`\`\`
+```
 src/
 ├── api/
 │ └── swapi.ts # Cliente da API SWAPI
@@ -46,29 +46,13 @@ src/
 ├── utils/
 │ └── fetchResourceName.ts # Utilitário para resolver URLs
 ├── **tests**/ # Testes unitários
-│ ├── App.test.tsx
 │ ├── CharacterList.test.tsx
 │ ├── useIsMobile.test.ts
 │ └── fetchResourceName.test.ts
 ├── App.tsx # Componente raiz
 ├── theme.css # Design System completo
 └── index.tsx # Entrada da aplicação
-\`\`\`
-
-## 🎨 Design System
-
-O projeto utiliza um design system completo com variáveis CSS organizadas:
-
-### Paleta de Cores
-
-- **Cores Base**: Tons de azul espacial e dourado inspirados em Star Wars
-- **Cores de UI**: Branco, cinzas e tons de destaque
-- **Cores Temáticas**: Azul Jedi, Vermelho Sith, Dourado Estrela
-
-### Tipografia
-
-- **Display**: Orbitron (títulos e headings)
-- **Body**: Rajdhani (texto corrido)
+```
 
 ### Espaçamento
 
@@ -76,48 +60,48 @@ Escala baseada em múltiplos de 4px (4, 8, 16, 24, 32, 48, 64)
 
 ### Componentes
 
-Todos os componentes do Ant Design foram customizados para seguir o tema Star Wars.
+Todos os componentes do Ant Design foram customizados para seguir o tema
 
 ## 🛠️ Instalação
 
 1. Clone o repositório:
 
-\`\`\`bash
-git clone <url-do-repositorio>
+```bash
+git clone https://github.com/andrezadesousa/smartnx
 cd swapi-react
-\`\`\`
+```
 
 2. Instale as dependências:
 
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 3. Inicie o servidor de desenvolvimento:
 
-\`\`\`bash
+```bash
 npm start
-\`\`\`
+```
 
 4. Acesse no navegador:
 
-\`\`\`
+```
 http://localhost:3000
-\`\`\`
+```
 
 ## 🧪 Testes
 
 Execute os testes unitários:
 
-\`\`\`bash
+```bash
 npm test
-\`\`\`
+```
 
 Execute os testes com cobertura:
 
-\`\`\`bash
+```bash
 npm test -- --coverage
-\`\`\`
+```
 
 ### Cobertura de Testes
 
@@ -134,10 +118,6 @@ Os testes cobrem:
 ## 📱 Responsividade
 
 O projeto é totalmente responsivo com breakpoints definidos:
-
-- **Mobile**: < 480px
-- **Tablet**: 480px - 768px
-- **Desktop**: > 768px
 
 ### Características Responsivas
 
@@ -182,9 +162,9 @@ Drawer lateral com:
 
 A aplicação consome a SWAPI (Star Wars API):
 
-\`\`\`typescript
+```typescript
 const BASE = "https://swapi.dev/api";
-\`\`\`
+```
 
 Não é necessária autenticação ou chave de API.
 
@@ -194,20 +174,13 @@ Não é necessária autenticação ou chave de API.
 
 Edite as variáveis CSS em `src/theme.css`:
 
-\`\`\`css
+```css
 :root {
 --color-jedi-blue: #4a9eff;
 --color-star-gold: #ffd700;
 /_ ... outras variáveis _/
 }
-\`\`\`
-
-### Fontes
-
-As fontes são carregadas via Google Fonts:
-
-- Orbitron (display)
-- Rajdhani (body)
+```
 
 ### Componentes
 
@@ -234,18 +207,18 @@ Todos os componentes do Ant Design podem ser customizados através das classes C
 
 ### Erro ao iniciar
 
-\`\`\`bash
+```bash
 rm -rf node_modules
 npm install
 npm start
-\`\`\`
+```
 
 ### Testes falhando
 
-\`\`\`bash
+```bash
 npm test -- --clearCache
 npm test
-\`\`\`
+```
 
 ### API não responde
 
