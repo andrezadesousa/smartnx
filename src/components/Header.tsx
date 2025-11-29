@@ -8,7 +8,6 @@ const logoUrl =
   "https://www.smartnx.com/wp-content/themes/smartnx/plataforma-cxaas/SmartNX-logo-header.png";
 
 interface HeaderProps {
-  favoriteCount?: number;
   themeName: "light" | "dark" | "whiteLabel";
   setThemeName: (theme: "light" | "dark" | "whiteLabel") => void;
   customColors?: { primary: string; background: string; text: string };
@@ -20,7 +19,6 @@ interface HeaderProps {
 }
 
 const Header = ({
-  favoriteCount = 0,
   themeName,
   setThemeName,
   customColors,
@@ -81,11 +79,6 @@ const Header = ({
         </Left>
         <Right>
           <HeaderText>Andreza Sousa - Teste de Front-end</HeaderText>
-          {favoriteCount > 0 && (
-            <FavCount>
-              <Heart size={16} fill="currentColor" /> {favoriteCount}
-            </FavCount>
-          )}
 
           <ThemeContainer>
             <ThemeButton onClick={() => setShowThemeMenu(!showThemeMenu)}>
@@ -102,13 +95,13 @@ const Header = ({
                   transition={{ duration: 0.2 }}
                 >
                   <ThemeOption onClick={() => handleThemeSelect("light")}>
-                    <Sun size={16} /> Light Mode
+                    <Sun size={16} /> Tema claro
                   </ThemeOption>
                   <ThemeOption onClick={() => handleThemeSelect("dark")}>
-                    <Moon size={16} /> Dark Mode
+                    <Moon size={16} /> Tema escuro
                   </ThemeOption>
                   <ThemeOption onClick={() => handleThemeSelect("whiteLabel")}>
-                    <Palette size={16} /> White Label
+                    <Palette size={16} /> Escolha sua cor
                   </ThemeOption>
                 </ThemeMenu>
               )}
@@ -133,10 +126,10 @@ const Header = ({
               exit={{ scale: 0.8, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <ColorPickerTitle>Customize Your Colors</ColorPickerTitle>
+              <ColorPickerTitle>Customize suas cores</ColorPickerTitle>
 
               <ColorInputGroup>
-                <ColorInputLabel>Primary Color</ColorInputLabel>
+                <ColorInputLabel>Cor Primária</ColorInputLabel>
                 <ColorInputWrapper>
                   <ColorInput
                     type="color"
@@ -156,7 +149,7 @@ const Header = ({
               </ColorInputGroup>
 
               <ColorInputGroup>
-                <ColorInputLabel>Background Color</ColorInputLabel>
+                <ColorInputLabel>Cor de Fundo</ColorInputLabel>
                 <ColorInputWrapper>
                   <ColorInput
                     type="color"
@@ -176,7 +169,7 @@ const Header = ({
               </ColorInputGroup>
 
               <ColorInputGroup>
-                <ColorInputLabel>Text Color</ColorInputLabel>
+                <ColorInputLabel>Cor do Texto</ColorInputLabel>
                 <ColorInputWrapper>
                   <ColorInput
                     type="color"
@@ -193,10 +186,10 @@ const Header = ({
 
               <ColorPickerActions>
                 <ColorPickerButton onClick={() => setShowColorPicker(false)}>
-                  Cancel
+                  Cancelar
                 </ColorPickerButton>
                 <ColorPickerButton $primary onClick={applyCustomColors}>
-                  Apply Colors
+                  Aplicar Cores
                 </ColorPickerButton>
               </ColorPickerActions>
             </ColorPickerModal>
@@ -264,24 +257,6 @@ const HeaderText = styled.span`
 
   @media (max-width: 768px) {
     display: none;
-  }
-`;
-
-const FavCount = styled.span`
-  background: ${(props) => props.theme.primary}20;
-  color: ${(props) => props.theme.primary};
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  border: 1px solid ${(props) => props.theme.primary}50;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  @media (max-width: 768px) {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
   }
 `;
 
