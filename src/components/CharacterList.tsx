@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   Input,
   Row,
@@ -11,6 +13,7 @@ import {
   Button,
   Timeline,
   Skeleton,
+  Empty,
 } from "antd";
 
 import { fetchCharacters } from "../api/swapi";
@@ -34,6 +37,7 @@ import {
   Clock,
   Users,
   Shapes,
+  SearchIcon,
 } from "lucide-react";
 import { animated, useSpring } from "@react-spring/web";
 import useIsMobile from "../hooks/useIsMobile";
@@ -63,6 +67,12 @@ export default function CharacterList() {
   const [resolvedStarships, setResolvedStarships] = useState<string[]>([]);
 
   const pageSize = 10;
+
+  const cardAnimation = useSpring({
+    from: { opacity: 0, transform: "translateY(20px)" },
+    to: { opacity: 1, transform: "translateY(0px)" },
+    config: { tension: 180, friction: 18 },
+  });
 
   useEffect(() => {
     load(page, searchText);
@@ -152,116 +162,178 @@ export default function CharacterList() {
   });
 
   return (
-    <>
-      <Card title="Star Wars — Personagens" className="card-wrapper">
-        {/* 🔍 SEARCH */}
-        <Search
-          placeholder="Filtrar por nome"
-          enterButton
-          allowClear
-          value={searchText}
-          onChange={(e) => {
-            setSearchText(e.target.value);
-            setPage(1);
-          }}
-          onSearch={(value) => {
-            setSearchText(value.trim());
-            setPage(1);
-          }}
-          className="search-input"
-        />
+    <div className="character-list-container">
+      <section className="hero-section">
+        <div className="hero-content">
+          <h2 className="hero-title">
+            <Sparkles size={32} className="hero-icon" />
+            Explore os Personagens
+          </h2>
+          <p className="hero-description">
+            Descubra informações detalhadas sobre os personagens icônicos da
+            saga Star Wars
+          </p>
+        </div>
+      </section>
 
-        {/* SKELETON */}
-        {loading && (
-          <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
-            {Array.from({ length: 10 }).map((_, i) => (
-              <Col key={i} xs={24} sm={12} md={8} lg={6} xl={6}>
-                <Card className="character-card">
-                  <Skeleton active avatar paragraph={{ rows: 3 }} />
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        )}
+      <section className="search-section">
+        <div className="search-wrapper">
+          <SearchIcon size={20} className="search-icon-prefix" />
+          <Search
+            // placeholder="Digite o nome do personagem..."
+            enterButton="Buscar"
+            allowClear
+            size="large"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+              setPage(1);
+            }}
+            onSearch={(value) => {
+              setSearchText(value.trim());
+              setPage(1);
+            }}
+            className="search-input-enhanced"
+          />
+        </div>
 
         {!loading && (
-          <animated.div style={gridAnimation}>
-            <Row gutter={[16, 16]}>
-              {data.map((character) => (
-                <Col key={character.url} xs={24} sm={12} md={8} lg={6} xl={6}>
-                  <Card
-                    hoverable
-                    className="character-card"
-                    title={<div className="card-title">{character.name}</div>}
-                    actions={[
-                      isMobile ? (
-                        <Eye
-                          key="details-mobile"
-                          size={20}
-                          onClick={() => openDetails(character)}
-                          style={{ cursor: "pointer" }}
-                        />
-                      ) : (
-                        <Tooltip title="Ver detalhes" placement="top" key="d1">
-                          <Button
-                            type="primary"
-                            size="small"
-                            onClick={() => openDetails(character)}
-                          >
-                            Detalhes
-                          </Button>
-                        </Tooltip>
-                      ),
-                    ]}
-                  >
-                    <div className="card-content">
-                      <p>
-                        <Calendar size={14} /> <strong>Nascimento:</strong>{" "}
-                        {character.birth_year}
-                      </p>
+          <div className="results-info">
+            <p className="results-count">
+              {total > 0 ? (
+                <>
+                  Exibindo <strong>{(page - 1) * pageSize + 1}</strong> -{" "}
+                  <strong>{Math.min(page * pageSize, total)}</strong> de{" "}
+                  <strong>{total}</strong> personagens
+                </>
+              ) : (
+                "Nenhum personagem encontrado"
+              )}
+            </p>
+          </div>
+        )}
+      </section>
 
-                      <p>
-                        <Users size={14} /> <strong>Gênero:</strong>{" "}
-                        {character.gender}
-                      </p>
+      {/* SKELETON */}
+      {loading && (
+        <Row gutter={[24, 24]} className="characters-grid">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <Col key={i} xs={24} sm={12} md={8} lg={6} xl={6}>
+              <Card className="character-card skeleton-card">
+                <Skeleton active avatar paragraph={{ rows: 4 }} />
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
 
-                      <Tag color="gold">Altura: {character.height} cm</Tag>
-                    </div>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-
-            <div className="pagination-wrapper">
-              <Pagination
-                current={page}
-                pageSize={pageSize}
-                total={total}
-                onChange={(p) => setPage(p)}
-                showSizeChanger={false}
+      {!loading && (
+        <animated.div style={gridAnimation}>
+          {data.length === 0 ? (
+            <div className="empty-state">
+              <Empty
+                description="Nenhum personagem encontrado"
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
             </div>
-          </animated.div>
-        )}
-      </Card>
+          ) : (
+            <>
+              <Row gutter={[24, 24]} className="characters-grid">
+                {data.map((character, index) => (
+                  <Col key={character.url} xs={24} sm={12} md={8} lg={6} xl={6}>
+                    <animated.div style={cardAnimation}>
+                      <Card
+                        hoverable
+                        className="character-card"
+                        actions={[
+                          <Tooltip
+                            title="Ver detalhes completos"
+                            placement="top"
+                            key="details"
+                          >
+                            <Button
+                              type="primary"
+                              size={isMobile ? "small" : "middle"}
+                              icon={<Eye size={16} />}
+                              onClick={() => openDetails(character)}
+                              className="details-button"
+                            >
+                              {!isMobile && "Detalhes"}
+                            </Button>
+                          </Tooltip>,
+                        ]}
+                      >
+                        <div className="card-header">
+                          <div className="card-avatar">
+                            <User size={28} />
+                          </div>
+                          <h3 className="card-title">{character.name}</h3>
+                        </div>
+
+                        <div className="card-content">
+                          <div className="card-info-row">
+                            <Calendar size={16} />
+                            <span className="info-label">Nascimento:</span>
+                            <span className="info-value">
+                              {character.birth_year}
+                            </span>
+                          </div>
+
+                          <div className="card-info-row">
+                            <Users size={16} />
+                            <span className="info-label">Gênero:</span>
+                            <span className="info-value">
+                              {character.gender}
+                            </span>
+                          </div>
+
+                          <div className="card-tags">
+                            <Tag color="purple" className="custom-tag">
+                              <Ruler size={12} /> {character.height} cm
+                            </Tag>
+                            <Tag color="blue" className="custom-tag">
+                              <Scale size={12} /> {character.mass} kg
+                            </Tag>
+                          </div>
+                        </div>
+                      </Card>
+                    </animated.div>
+                  </Col>
+                ))}
+              </Row>
+
+              <div className="pagination-wrapper">
+                <Pagination
+                  current={page}
+                  pageSize={pageSize}
+                  total={total}
+                  onChange={(p) => setPage(p)}
+                  showSizeChanger={false}
+                  showTotal={(total) => `Total de ${total} personagens`}
+                />
+              </div>
+            </>
+          )}
+        </animated.div>
+      )}
 
       {/* ================= DRAWER ================ */}
       <Drawer
         title={
-          <span className="drawer-title">
-            <Sparkles size={16} style={{ marginRight: 8 }} />
-            {selectedCharacter?.name}
-          </span>
+          <div className="drawer-header">
+            <Sparkles size={20} />
+            <span>{selectedCharacter?.name}</span>
+          </div>
         }
         placement="right"
-        width={360}
+        width={isMobile ? "90%" : 420}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         className="character-drawer"
       >
         {drawerLoading && (
           <div style={{ padding: 20 }}>
-            <Skeleton active paragraph={{ rows: 10 }} />
+            <Skeleton active paragraph={{ rows: 12 }} />
           </div>
         )}
 
@@ -269,85 +341,143 @@ export default function CharacterList() {
           <animated.div style={drawerAnimation} className="drawer-content">
             {/* === Características === */}
             <div className="drawer-block">
-              <h3 className="drawer-title">
-                <Shapes size={16} /> Características
+              <h3 className="drawer-block-title">
+                <Shapes size={18} /> Características Físicas
               </h3>
 
-              <p>
-                <Ruler size={14} /> <strong>Altura:</strong>{" "}
-                {selectedCharacter.height} cm
-              </p>
-              <p>
-                <Scale size={14} /> <strong>Peso:</strong>{" "}
-                {selectedCharacter.mass} kg
-              </p>
-              <p>
-                <User size={14} /> <strong>Cabelo:</strong>{" "}
-                {selectedCharacter.hair_color}
-              </p>
-              <p>
-                <Palette size={14} /> <strong>Pele:</strong>{" "}
-                {selectedCharacter.skin_color}
-              </p>
-              <p>
-                <Palette size={14} /> <strong>Olhos:</strong>{" "}
-                {selectedCharacter.eye_color}
-              </p>
+              <div className="drawer-info-grid">
+                <div className="drawer-info-item">
+                  <Ruler size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Altura</span>
+                    <span className="drawer-value">
+                      {selectedCharacter.height} cm
+                    </span>
+                  </div>
+                </div>
+
+                <div className="drawer-info-item">
+                  <Scale size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Peso</span>
+                    <span className="drawer-value">
+                      {selectedCharacter.mass} kg
+                    </span>
+                  </div>
+                </div>
+
+                <div className="drawer-info-item">
+                  <User size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Cabelo</span>
+                    <span className="drawer-value">
+                      {selectedCharacter.hair_color}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="drawer-info-item">
+                  <Palette size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Pele</span>
+                    <span className="drawer-value">
+                      {selectedCharacter.skin_color}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="drawer-info-item">
+                  <Eye size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Olhos</span>
+                    <span className="drawer-value">
+                      {selectedCharacter.eye_color}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="divider" />
 
             {/* === Identidade === */}
             <div className="drawer-block">
-              <h3 className="drawer-title">
-                <Badge size={16} /> Identidade
+              <h3 className="drawer-block-title">
+                <Badge size={18} /> Identidade
               </h3>
 
-              <p>
-                <Calendar size={14} /> <strong>Nascimento:</strong>{" "}
-                {selectedCharacter.birth_year}
-              </p>
+              <div className="drawer-info-grid">
+                <div className="drawer-info-item">
+                  <Calendar size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Nascimento</span>
+                    <span className="drawer-value">
+                      {selectedCharacter.birth_year}
+                    </span>
+                  </div>
+                </div>
 
-              <p>
-                <Users size={14} /> <strong>Gênero:</strong>{" "}
-                {selectedCharacter.gender}
-              </p>
+                <div className="drawer-info-item">
+                  <Users size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Gênero</span>
+                    <span className="drawer-value">
+                      {selectedCharacter.gender}
+                    </span>
+                  </div>
+                </div>
 
-              <p data-testid="homeworld">
-                <Globe size={14} /> <strong>Mundo Natal:</strong>{" "}
-                {resolvedHomeworld || "Desconhecido"}
-              </p>
+                <div className="drawer-info-item" data-testid="homeworld">
+                  <Globe size={16} className="drawer-icon" />
+                  <div>
+                    <span className="drawer-label">Mundo Natal</span>
+                    <span className="drawer-value">
+                      {resolvedHomeworld || "Desconhecido"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="divider" />
 
             {/* === Filmes === */}
             <div className="drawer-block">
-              <h3 className="drawer-title">
-                <Film size={16} /> Filmes
+              <h3 className="drawer-block-title">
+                <Film size={18} /> Aparições em Filmes
               </h3>
-              <ul className="drawer-list">
-                {resolvedFilms.map((f) => (
-                  <li key={f}>{f}</li>
-                ))}
-              </ul>
+              {resolvedFilms.length > 0 ? (
+                <ul className="drawer-list">
+                  {resolvedFilms.map((f) => (
+                    <li key={f} className="drawer-list-item">
+                      <Film size={14} className="list-icon" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="drawer-empty">Nenhum filme registrado</p>
+              )}
             </div>
 
             <div className="divider" />
 
             {/* === Veículos === */}
             <div className="drawer-block">
-              <h3 className="drawer-title">
-                <Car size={16} /> Veículos
+              <h3 className="drawer-block-title">
+                <Car size={18} /> Veículos
               </h3>
               {resolvedVehicles.length ? (
                 <ul className="drawer-list">
                   {resolvedVehicles.map((v) => (
-                    <li key={v}>{v}</li>
+                    <li key={v} className="drawer-list-item">
+                      <Car size={14} className="list-icon" />
+                      {v}
+                    </li>
                   ))}
                 </ul>
               ) : (
-                <p>Nenhum veículo registrado.</p>
+                <p className="drawer-empty">Nenhum veículo registrado</p>
               )}
             </div>
 
@@ -355,17 +485,20 @@ export default function CharacterList() {
 
             {/* === Naves === */}
             <div className="drawer-block">
-              <h3 className="drawer-title">
-                <Ship size={16} /> Naves
+              <h3 className="drawer-block-title">
+                <Ship size={18} /> Naves Espaciais
               </h3>
               {resolvedStarships.length ? (
                 <ul className="drawer-list">
                   {resolvedStarships.map((s) => (
-                    <li key={s}>{s}</li>
+                    <li key={s} className="drawer-list-item">
+                      <Ship size={14} className="list-icon" />
+                      {s}
+                    </li>
                   ))}
                 </ul>
               ) : (
-                <p>Nenhuma nave registrada.</p>
+                <p className="drawer-empty">Nenhuma nave registrada</p>
               )}
             </div>
 
@@ -373,17 +506,20 @@ export default function CharacterList() {
 
             {/* === Espécies === */}
             <div className="drawer-block">
-              <h3 className="drawer-title">
-                <Users size={16} /> Espécies
+              <h3 className="drawer-block-title">
+                <Users size={18} /> Espécies
               </h3>
               {resolvedSpecies.length ? (
                 <ul className="drawer-list">
                   {resolvedSpecies.map((sp) => (
-                    <li key={sp}>{sp}</li>
+                    <li key={sp} className="drawer-list-item">
+                      <Sparkles size={14} className="list-icon" />
+                      {sp}
+                    </li>
                   ))}
                 </ul>
               ) : (
-                <p>Sem espécies cadastradas.</p>
+                <p className="drawer-empty">Humano (padrão)</p>
               )}
             </div>
 
@@ -391,22 +527,34 @@ export default function CharacterList() {
 
             {/* === Timeline === */}
             <div className="drawer-block">
-              <h3 className="drawer-title">
-                <Clock size={16} style={{ marginRight: 8 }} />
-                Linha do Tempo
+              <h3 className="drawer-block-title">
+                <Clock size={18} />
+                Histórico de Registros
               </h3>
-              <Timeline style={{ marginLeft: 20, marginTop: 20 }}>
+              <Timeline className="custom-timeline">
                 <Timeline.Item color="blue">
-                  <strong>Criado Em:</strong> {selectedCharacter.created}
+                  <strong>Criado em:</strong>
+                  <br />
+                  <span className="timeline-date">
+                    {new Date(selectedCharacter.created).toLocaleDateString(
+                      "pt-BR"
+                    )}
+                  </span>
                 </Timeline.Item>
-                <Timeline.Item color="blue">
-                  <strong>Editado Em:</strong> {selectedCharacter.edited}
+                <Timeline.Item color="purple">
+                  <strong>Última atualização:</strong>
+                  <br />
+                  <span className="timeline-date">
+                    {new Date(selectedCharacter.edited).toLocaleDateString(
+                      "pt-BR"
+                    )}
+                  </span>
                 </Timeline.Item>
               </Timeline>
             </div>
           </animated.div>
         )}
       </Drawer>
-    </>
+    </div>
   );
 }
