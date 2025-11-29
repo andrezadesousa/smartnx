@@ -203,7 +203,7 @@ const Header = ({
 export default Header;
 
 const HeaderWrapper = styled.header`
-  background: ${(props) => props.theme.background};
+  background: #00112b;
   color: ${(props) => props.theme.text};
   padding: 1rem 0;
   transition: all 0.3s ease;
@@ -253,7 +253,7 @@ const Logo = styled.img`
 const HeaderText = styled.span`
   font-size: 0.9rem;
   font-weight: 500;
-  color: ${(props) => props.theme.text};
+  color: #ffffff;
 
   @media (max-width: 768px) {
     display: none;
