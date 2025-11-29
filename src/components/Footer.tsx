@@ -1,75 +1,102 @@
-import { Heart, Code, Sparkles } from "lucide-react";
+import styled from "styled-components";
 
-export default function Footer() {
+const Footer = () => {
   return (
-    <footer className="app-footer">
-      <div className="footer-container">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h3 className="footer-title">
-              <Sparkles size={16} />
-              Star Wars Universe
-            </h3>
-            <p className="footer-description">
-              Explore a galáxia de Star Wars e descubra informações detalhadas
-              sobre seus personagens favoritos.
-            </p>
-          </div>
-
-          <div className="footer-section">
-            <h4 className="footer-subtitle">Recursos</h4>
-            <ul className="footer-links">
-              <li>
-                <a href="#characters">Personagens</a>
-              </li>
-              <li>
-                <a href="#about">Sobre o Projeto</a>
-              </li>
-              <li>
-                <a href="#api">API SWAPI</a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="footer-section">
-            <h4 className="footer-subtitle">Informações</h4>
-            <ul className="footer-links">
-              <li>
-                <a
-                  href="https://swapi.dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  SWAPI.dev
-                </a>
-              </li>
-              <li>
-                <a href="#privacy">Privacidade</a>
-              </li>
-              <li>
-                <a href="#terms">Termos de Uso</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p className="footer-copyright">
-            Desenvolvido com <Heart size={14} className="footer-heart" /> e{" "}
-            <Code size={14} /> • © 2025 Star Wars Universe
-          </p>
-          <p className="footer-attribution">
-            Dados fornecidos por{" "}
-            <a
-              href="https://swapi.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              SWAPI
-            </a>
-          </p>
-        </div>
-      </div>
-    </footer>
+    <FooterWrapper>
+      <Content>
+        <FooterTitle>Star Wars - SWAPI</FooterTitle>
+        <FooterText>© 2025 Andreza Sousa - Teste de Front-end Jr</FooterText>
+        <FooterText>
+          Desenvolvido com React, TypeScript e Styled Components
+        </FooterText>
+        <FooterLinks>
+          <FooterLink
+            href="https://swapi.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Star Wars API
+          </FooterLink>
+          <FooterLink
+            href="https://www.smartnx.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            SMARTNX
+          </FooterLink>
+        </FooterLinks>
+      </Content>
+    </FooterWrapper>
   );
-}
+};
+
+export default Footer;
+
+const FooterWrapper = styled.footer`
+  background: #00112b;
+  color: #ffffff;
+  padding: 3rem 0 2rem 0;
+  margin-top: 4rem;
+  border-top: 1px solid rgba(240, 20, 30, 0.2);
+
+  @media (max-width: 768px) {
+    padding: 2rem 0 1.5rem 0;
+    margin-top: 3rem;
+  }
+`;
+
+const Content = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 0 0.75rem;
+  }
+`;
+
+const FooterTitle = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  color: #f0141e;
+
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+`;
+
+const FooterText = styled.p`
+  margin: 0.5rem 0;
+  opacity: 0.8;
+  font-size: 0.9rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
+`;
+
+const FooterLinks = styled.div`
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+
+  @media (max-width: 768px) {
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+`;
+
+const FooterLink = styled.a`
+  color: #f0141e;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+`;
