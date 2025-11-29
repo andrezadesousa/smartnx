@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import CharacterList from "./components/CharacterList";
-import "antd/dist/antd.css";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
+import "antd/dist/antd.css";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,11 +24,10 @@ function App() {
 
   return (
     <div className="custom-theme">
-      <div className="app-container">
-        <main className="main-content">
-          <CharacterList />
-        </main>
-      </div>
+      <Header />
+      <main className="main-content">
+        <CharacterList />
+      </main>
       <Footer />
     </div>
   );
