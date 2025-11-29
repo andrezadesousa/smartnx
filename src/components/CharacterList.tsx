@@ -15,8 +15,6 @@ import {
 
 import { fetchCharacters } from "../api/swapi";
 import type { Character } from "../types";
-
-import useIsMobile from "../hooks/useUsMobile";
 import { fetchResourceName } from "../utils/fetchResourceName";
 
 // ⭐ Lucide Icons
@@ -38,6 +36,7 @@ import {
   Shapes,
 } from "lucide-react";
 import { animated, useSpring } from "@react-spring/web";
+import useIsMobile from "../hooks/useIsMobile";
 
 const { Search } = Input;
 
