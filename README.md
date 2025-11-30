@@ -8,7 +8,34 @@
 
 Uma aplicação React moderna e responsiva que lista personagens do universo Star Wars, consumindo a API SWAPI (Star Wars API). Desenvolvido com TypeScript, Ant Design e um design system inspirado na galáxia distante.
 
-## ✨ Características
+## Instalação
+
+1. Clone o repositório:
+
+```bash
+git clone https://github.com/andrezadesousa/smartnx
+cd swapi-react
+```
+
+2. Instale as dependências:
+
+```bash
+npm install
+```
+
+3. Inicie o servidor de desenvolvimento:
+
+```bash
+npm start
+```
+
+4. Acesse no navegador:
+
+```
+http://localhost:3000
+```
+
+## Características
 
 - 🎨 **Design System Completo** - Paleta de cores com variáveis CSS customizáveis
 - 📱 **100% Responsivo** - Funciona perfeitamente em dispositivos mobile, tablet e desktop
@@ -20,7 +47,7 @@ Uma aplicação React moderna e responsiva que lista personagens do universo Sta
 - ♿ **Acessibilidade** - Implementado com boas práticas de acessibilidade (ARIA)
 - 🎯 **TypeScript** - Tipagem estática para maior segurança e manutenibilidade
 
-## 🚀 Tecnologias
+## Tecnologias
 
 - **React 17.0.2** - Biblioteca JavaScript para interfaces
 - **TypeScript 4.9.5** - Superset tipado do JavaScript
@@ -31,7 +58,7 @@ Uma aplicação React moderna e responsiva que lista personagens do universo Sta
 - **React Testing Library** - Testes focados no usuário
 - **SWAPI** - API pública de Star Wars
 
-## 📦 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 src/
@@ -68,34 +95,7 @@ Escala baseada em múltiplos de 4px (4, 8, 16, 24, 32, 48, 64)
 
 Todos os componentes do Ant Design foram customizados para seguir o tema
 
-## 🛠️ Instalação
-
-1. Clone o repositório:
-
-```bash
-git clone https://github.com/andrezadesousa/smartnx
-cd swapi-react
-```
-
-2. Instale as dependências:
-
-```bash
-npm install
-```
-
-3. Inicie o servidor de desenvolvimento:
-
-```bash
-npm start
-```
-
-4. Acesse no navegador:
-
-```
-http://localhost:3000
-```
-
-## 🧪 Testes
+## Testes
 
 Execute os testes unitários:
 
@@ -121,7 +121,7 @@ Os testes cobrem:
 - ✅ Estados de loading e erro
 - ✅ Utilitários e funções auxiliares
 
-## 📱 Responsividade
+## Responsividade
 
 O projeto é totalmente responsivo com breakpoints definidos:
 
@@ -133,7 +133,7 @@ O projeto é totalmente responsivo com breakpoints definidos:
 - Tipografia fluida (clamp)
 - Botões e ícones otimizados para touch
 
-## 🎯 Funcionalidades
+## Funcionalidades
 
 ### 1. Listagem de Personagens
 
@@ -174,7 +174,7 @@ const BASE = "https://swapi.dev/api";
 
 Não é necessária autenticação ou chave de API.
 
-## 🎨 Customização
+## Customização
 
 ### Cores
 
@@ -192,7 +192,7 @@ Edite as variáveis CSS em `src/theme.css`:
 
 Todos os componentes do Ant Design podem ser customizados através das classes CSS do tema.
 
-## 📊 Performance
+## Performance
 
 - ⚡ Lazy loading de imagens
 - 🎯 Memoização de componentes
@@ -200,7 +200,7 @@ Todos os componentes do Ant Design podem ser customizados através das classes C
 - 🔄 Debounce implícito na busca
 - 💾 Requisições otimizadas
 
-## ♿ Acessibilidade
+## Acessibilidade
 
 - ✅ Roles ARIA apropriados
 - ✅ Alt text em imagens
@@ -209,7 +209,7 @@ Todos os componentes do Ant Design podem ser customizados através das classes C
 - ✅ Contraste de cores WCAG AA
 - ✅ Screen reader friendly
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Erro ao iniciar
 
@@ -230,7 +230,7 @@ npm test
 
 Verifique se a SWAPI está online em: https://swapi.dev/
 
-## 📝 Boas Práticas Implementadas
+## Boas Práticas Implementadas
 
 1. **TypeScript**: Tipagem forte em todo o código
 2. **Componentização**: Componentes reutilizáveis e modulares
@@ -247,11 +247,11 @@ Verifique se a SWAPI está online em: https://swapi.dev/
 
 **Andreza** - Desenvolvedora do projeto
 
-## 📄 Licença
+## Licença
 
 Este projeto é privado e para fins educacionais.
 
-## 🙏 Agradecimentos
+## Agradecimentos
 
 - [SWAPI](https://swapi.dev/) - Star Wars API
 - [Ant Design](https://ant.design/) - Framework de componentes
@@ -260,4 +260,4 @@ Este projeto é privado e para fins educacionais.
 
 ---
 
-⭐ **May the Force be with you!** ⭐
+⭐ **Que a Força esteja com você!** ⭐
