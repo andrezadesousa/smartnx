@@ -23,7 +23,7 @@ export default function Hero({
 
   const handleReset = useCallback(() => {
     setSearchText("");
-    onReset(); // 🔥 avisa para o CharacterList resetar
+    onReset();
   }, [onReset]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
