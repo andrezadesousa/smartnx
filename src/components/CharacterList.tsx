@@ -15,7 +15,6 @@ import {
   Empty,
 } from "antd";
 import styled from "styled-components";
-
 import { fetchCharacters } from "../api/swapi";
 import type { Character } from "../types";
 import { fetchResourceName } from "../utils/fetchResourceName";
@@ -173,9 +172,7 @@ export default function CharacterList({
                   <strong>{Math.min(page * pageSize, total)}</strong> de{" "}
                   <strong>{total}</strong> personagens
                 </>
-              ) : (
-                "Nenhum personagem encontrado"
-              )}
+              ) : null}
             </ResultsCount>
           </ResultsInfo>
         )}
@@ -197,10 +194,7 @@ export default function CharacterList({
         <animated.div style={gridAnimation}>
           {data.length === 0 ? (
             <EmptyState>
-              <Empty
-                description="Nenhum personagem encontrado"
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-              />
+              <Empty description="Nenhum personagem encontrado" />
             </EmptyState>
           ) : (
             <>
@@ -208,27 +202,16 @@ export default function CharacterList({
                 {data.map((character, index) => (
                   <Col key={character.url} xs={24} sm={12} md={8} lg={6} xl={6}>
                     <animated.div style={cardAnimation}>
-                      <StyledCard
-                        hoverable
-                        className="character-card"
-                        actions={[
-                          <Tooltip
-                            title="Ver detalhes completos"
-                            placement="top"
-                            key="details"
-                          >
-                            <DetailsButton
-                              type="primary"
-                              size={isMobile ? "small" : "middle"}
-                              icon={<Eye size={16} />}
-                              onClick={() => openDetails(character)}
-                              className="details-button"
-                            >
-                              {!isMobile && "Detalhes"}
-                            </DetailsButton>
-                          </Tooltip>,
-                        ]}
-                      >
+                      <StyledCard hoverable className="character-card">
+                        <Tooltip title="Ver detalhes completos" placement="top">
+                          <DetailsButton
+                            type="link"
+                            icon={<Eye size={18} />}
+                            onClick={() => openDetails(character)}
+                            className="details-button"
+                          />
+                        </Tooltip>
+
                         <CardHeader>
                           <CardAvatar>
                             <User size={28} />
@@ -593,6 +576,7 @@ const StyledCard = styled(Card)`
     color: var(--text-900);
     display: flex;
     flex-direction: column;
+    position: relative;
 
     &:hover {
       border-color: var(--accent-700);
@@ -743,12 +727,33 @@ const CustomTag = styled(Tag)`
 
 const DetailsButton = styled(Button)`
   &.details-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-weight: 600;
-    width: 100%;
     justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid var(--accent-700);
+    color: var(--accent-700);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+      background: var(--accent-700);
+      color: var(--white);
+      transform: scale(1.1);
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
   }
 `;
 
