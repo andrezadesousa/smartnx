@@ -182,7 +182,10 @@ export default function CharacterList({
         <CharactersGrid gutter={[24, 24]}>
           {Array.from({ length: 10 }).map((_, i) => (
             <Col key={i} xs={24} sm={12} md={8} lg={6} xl={6}>
-              <StyledCard className="character-card skeleton-card">
+              <StyledCard
+                data-testid="character-skeleton"
+                className="character-card skeleton-card"
+              >
                 <Skeleton active avatar paragraph={{ rows: 4 }} />
               </StyledCard>
             </Col>

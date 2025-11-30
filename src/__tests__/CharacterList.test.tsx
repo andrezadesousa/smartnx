@@ -139,12 +139,9 @@ describe("CharacterList Component", () => {
   });
 
   it("exibe skeleton durante o carregamento", () => {
-    const { container } = render(<CharacterList searchQuery="" />);
+    render(<CharacterList searchQuery="" />);
 
-    // Verifica se os skeletons estão renderizados usando Testing Library
-    const skeletons = container.querySelectorAll(
-      ".character-card.skeleton-card"
-    );
+    const skeletons = screen.getAllByTestId("character-skeleton");
     expect(skeletons.length).toBeGreaterThan(0);
   });
 });
