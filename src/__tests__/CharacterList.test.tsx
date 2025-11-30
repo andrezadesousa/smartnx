@@ -55,35 +55,48 @@ describe("CharacterList Component", () => {
   });
 
   it("renderiza o personagem carregado", async () => {
-    render(<CharacterList />);
+    render(<CharacterList searchQuery="" />);
 
     expect(await screen.findByText("Luke Skywalker")).toBeInTheDocument();
   });
 
-  it("dispara o search e recarrega os dados", async () => {
-    render(<CharacterList />);
+  it("exibe informações do personagem no card", async () => {
+    render(<CharacterList searchQuery="" />);
 
-    const input = screen.getByPlaceholderText(/Filtrar por nome/i);
-    fireEvent.change(input, { target: { value: "luke" } });
+    expect(await screen.findByText("Luke Skywalker")).toBeInTheDocument();
+    expect(screen.getByText("19BBY")).toBeInTheDocument();
+    expect(screen.getByText("male")).toBeInTheDocument();
+    expect(screen.getByText(/172 cm/)).toBeInTheDocument();
+    expect(screen.getByText(/77 kg/)).toBeInTheDocument();
+  });
 
-    const button = screen.getByRole("button", { name: /search/i });
-    fireEvent.click(button);
+  it("recarrega os dados quando searchQuery muda", async () => {
+    const { rerender } = render(<CharacterList searchQuery="" />);
+
+    expect(await screen.findByText("Luke Skywalker")).toBeInTheDocument();
+
+    rerender(<CharacterList searchQuery="luke" />);
 
     await waitFor(() => {
       expect(fetchCharacters).toHaveBeenCalledWith(1, "luke");
     });
   });
 
-  it("abre o Drawer ao clicar em Detalhes e resolve o planeta", async () => {
-    render(<CharacterList />);
+  it("abre o Drawer ao clicar no botão de detalhes (ícone Eye)", async () => {
+    render(<CharacterList searchQuery="" />);
 
     expect(await screen.findByText("Luke Skywalker")).toBeInTheDocument();
 
-    const detailsBtn = screen.getByText(/detalhes/i);
+    // Encontra o botão com ícone Eye através do tooltip
+    const detailsBtn = screen.getByRole("button", { name: "" });
     fireEvent.click(detailsBtn);
 
     // Drawer aparece com o nome do personagem
-    expect(await screen.findAllByText("Luke Skywalker")).toHaveLength(2);
+    await waitFor(() => {
+      expect(
+        screen.getAllByText("Luke Skywalker").length
+      ).toBeGreaterThanOrEqual(2);
+    });
 
     // Aguarda os dados resolvidos
     await waitFor(() => {
@@ -93,15 +106,45 @@ describe("CharacterList Component", () => {
     expect(screen.getByTestId("homeworld")).toHaveTextContent("Resolved Name");
   });
 
-  it("exibe listas resolvidas (filmes, veículos, naves, espécies)", async () => {
-    render(<CharacterList />);
+  it("exibe listas resolvidas (filmes, veículos, naves, espécies) no drawer", async () => {
+    render(<CharacterList searchQuery="" />);
 
-    fireEvent.click(await screen.findByText(/detalhes/i));
+    // Aguarda o personagem aparecer
+    expect(await screen.findByText("Luke Skywalker")).toBeInTheDocument();
+
+    // Encontra o botão com ícone Eye
+    const detailsBtn = screen.getByRole("button", { name: "" });
+    fireEvent.click(detailsBtn);
 
     await waitFor(() => {
       expect(fetchResourceName).toHaveBeenCalledTimes(5); // homeworld + 4 categorias
     });
 
     expect(screen.getAllByText("Resolved Name").length).toBeGreaterThan(1);
+  });
+
+  it("exibe mensagem quando não há personagens", async () => {
+    (fetchCharacters as jest.Mock).mockResolvedValue({
+      count: 0,
+      results: [],
+    });
+
+    render(<CharacterList searchQuery="xyz" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Nenhum personagem encontrado")
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("exibe skeleton durante o carregamento", () => {
+    const { container } = render(<CharacterList searchQuery="" />);
+
+    // Verifica se os skeletons estão renderizados usando Testing Library
+    const skeletons = container.querySelectorAll(
+      ".character-card.skeleton-card"
+    );
+    expect(skeletons.length).toBeGreaterThan(0);
   });
 });
