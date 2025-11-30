@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Row,
   Col,
@@ -73,24 +73,27 @@ export default function CharacterList({
     setPage(1);
   }, [searchQuery]);
 
+  const load = useCallback(
+    async (p = 1, search = "") => {
+      setLoading(true);
+      if (onLoadingChange) onLoadingChange(true);
+      try {
+        const res = await fetchCharacters(p, search);
+        setData(res.results);
+        setTotal(res.count);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+        if (onLoadingChange) onLoadingChange(false);
+      }
+    },
+    [onLoadingChange]
+  );
+
   useEffect(() => {
     load(page, searchQuery);
-  }, [page, searchQuery]);
-
-  async function load(p = 1, search = "") {
-    setLoading(true);
-    if (onLoadingChange) onLoadingChange(true);
-    try {
-      const res = await fetchCharacters(p, search);
-      setData(res.results);
-      setTotal(res.count);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-      if (onLoadingChange) onLoadingChange(false);
-    }
-  }
+  }, [page, searchQuery, load]);
 
   const openDetails = (character: Character) => {
     setSelectedCharacter(character);

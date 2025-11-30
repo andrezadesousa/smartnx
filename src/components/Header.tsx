@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sun, Moon, Palette, Heart } from "lucide-react";
+import { Sun, Moon, Palette } from "lucide-react";
 
 const logoUrl =
   "https://www.smartnx.com/wp-content/themes/smartnx/plataforma-cxaas/SmartNX-logo-header.png";
