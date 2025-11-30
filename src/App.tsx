@@ -85,8 +85,8 @@ function App() {
 
   if (isLoading) {
     return (
-      <div className="loading-screen" role="status" aria-live="polite">
-        <img src="/loading.gif" alt="Loading" className="loading-image" />
+      <div className="loading__screen" role="status" aria-live="polite">
+        <img src="/loading.gif" alt="Loading" className="loading__image" />
       </div>
     );
   }
@@ -101,7 +101,7 @@ function App() {
           customColors={customColors}
           onCustomColorsChange={handleCustomColorsChange}
         />
-        <main className="main-content">
+        <main className="main__content">
           <Hero
             onSearch={handleSearch}
             onReset={handleReset}

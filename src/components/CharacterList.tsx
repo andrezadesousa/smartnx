@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import {
-  Input,
   Row,
   Col,
   Pagination,
@@ -15,6 +14,7 @@ import {
   Skeleton,
   Empty,
 } from "antd";
+import styled from "styled-components";
 
 import { fetchCharacters } from "../api/swapi";
 import type { Character } from "../types";
@@ -162,11 +162,11 @@ export default function CharacterList({
   });
 
   return (
-    <div className="character-list-container">
-      <section className="search-section">
+    <CharacterListContainer>
+      <SearchSection>
         {!loading && (
-          <div className="results-info">
-            <p className="results-count">
+          <ResultsInfo>
+            <ResultsCount>
               {total > 0 ? (
                 <>
                   Exibindo <strong>{(page - 1) * pageSize + 1}</strong> -{" "}
@@ -176,39 +176,39 @@ export default function CharacterList({
               ) : (
                 "Nenhum personagem encontrado"
               )}
-            </p>
-          </div>
+            </ResultsCount>
+          </ResultsInfo>
         )}
-      </section>
+      </SearchSection>
 
       {loading && (
-        <Row gutter={[24, 24]} className="characters-grid">
+        <CharactersGrid gutter={[24, 24]}>
           {Array.from({ length: 10 }).map((_, i) => (
             <Col key={i} xs={24} sm={12} md={8} lg={6} xl={6}>
-              <Card className="character-card skeleton-card">
+              <StyledCard className="character-card skeleton-card">
                 <Skeleton active avatar paragraph={{ rows: 4 }} />
-              </Card>
+              </StyledCard>
             </Col>
           ))}
-        </Row>
+        </CharactersGrid>
       )}
 
       {!loading && (
         <animated.div style={gridAnimation}>
           {data.length === 0 ? (
-            <div className="empty-state">
+            <EmptyState>
               <Empty
                 description="Nenhum personagem encontrado"
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
-            </div>
+            </EmptyState>
           ) : (
             <>
-              <Row gutter={[24, 24]} className="characters-grid">
+              <CharactersGrid gutter={[24, 24]}>
                 {data.map((character, index) => (
                   <Col key={character.url} xs={24} sm={12} md={8} lg={6} xl={6}>
                     <animated.div style={cardAnimation}>
-                      <Card
+                      <StyledCard
                         hoverable
                         className="character-card"
                         actions={[
@@ -217,7 +217,7 @@ export default function CharacterList({
                             placement="top"
                             key="details"
                           >
-                            <Button
+                            <DetailsButton
                               type="primary"
                               size={isMobile ? "small" : "middle"}
                               icon={<Eye size={16} />}
@@ -225,50 +225,46 @@ export default function CharacterList({
                               className="details-button"
                             >
                               {!isMobile && "Detalhes"}
-                            </Button>
+                            </DetailsButton>
                           </Tooltip>,
                         ]}
                       >
-                        <div className="card-header">
-                          <div className="card-avatar">
+                        <CardHeader>
+                          <CardAvatar>
                             <User size={28} />
-                          </div>
-                          <h3 className="card-title">{character.name}</h3>
-                        </div>
+                          </CardAvatar>
+                          <CardTitle>{character.name}</CardTitle>
+                        </CardHeader>
 
-                        <div className="card-content">
-                          <div className="card-info-row">
+                        <CardContent>
+                          <CardInfoRow>
                             <Calendar size={16} />
-                            <span className="info-label">Nascimento:</span>
-                            <span className="info-value">
-                              {character.birth_year}
-                            </span>
-                          </div>
+                            <InfoLabel>Nascimento:</InfoLabel>
+                            <InfoValue>{character.birth_year}</InfoValue>
+                          </CardInfoRow>
 
-                          <div className="card-info-row">
+                          <CardInfoRow>
                             <Users size={16} />
-                            <span className="info-label">Gênero:</span>
-                            <span className="info-value">
-                              {character.gender}
-                            </span>
-                          </div>
+                            <InfoLabel>Gênero:</InfoLabel>
+                            <InfoValue>{character.gender}</InfoValue>
+                          </CardInfoRow>
 
-                          <div className="card-tags">
-                            <Tag color="purple" className="custom-tag">
+                          <CardTags>
+                            <CustomTag color="purple" className="custom-tag">
                               <Ruler size={12} /> {character.height} cm
-                            </Tag>
-                            <Tag color="blue" className="custom-tag">
+                            </CustomTag>
+                            <CustomTag color="blue" className="custom-tag">
                               <Scale size={12} /> {character.mass} kg
-                            </Tag>
-                          </div>
-                        </div>
-                      </Card>
+                            </CustomTag>
+                          </CardTags>
+                        </CardContent>
+                      </StyledCard>
                     </animated.div>
                   </Col>
                 ))}
-              </Row>
+              </CharactersGrid>
 
-              <div className="pagination-wrapper">
+              <PaginationWrapper>
                 <Pagination
                   current={page}
                   pageSize={pageSize}
@@ -277,19 +273,19 @@ export default function CharacterList({
                   showSizeChanger={false}
                   showTotal={(total) => `Total de ${total} personagens`}
                 />
-              </div>
+              </PaginationWrapper>
             </>
           )}
         </animated.div>
       )}
 
       {/* ================= DRAWER ================ */}
-      <Drawer
+      <StyledDrawer
         title={
-          <div className="drawer-header">
+          <DrawerHeader>
             <Sparkles size={20} />
             <span>{selectedCharacter?.name}</span>
-          </div>
+          </DrawerHeader>
         }
         placement="right"
         width={isMobile ? "90%" : 420}
@@ -304,223 +300,629 @@ export default function CharacterList({
         )}
 
         {!drawerLoading && selectedCharacter && (
-          <animated.div style={drawerAnimation} className="drawer-content">
+          <DrawerContent style={drawerAnimation}>
             {/* === Características === */}
-            <div className="drawer-block">
-              <h3 className="drawer-block-title">
+            <DrawerBlock>
+              <DrawerBlockTitle>
                 <Shapes size={18} /> Características Físicas
-              </h3>
+              </DrawerBlockTitle>
 
-              <div className="drawer-info-grid">
-                <div className="drawer-info-item">
-                  <Ruler size={16} className="drawer-icon" />
+              <DrawerInfoGrid>
+                <DrawerInfoItem>
+                  <DrawerIcon>
+                    <Ruler size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Altura</span>
-                    <span className="drawer-value">
-                      {selectedCharacter.height} cm
-                    </span>
+                    <DrawerLabel>Altura</DrawerLabel>
+                    <DrawerValue>{selectedCharacter.height} cm</DrawerValue>
                   </div>
-                </div>
+                </DrawerInfoItem>
 
-                <div className="drawer-info-item">
-                  <Scale size={16} className="drawer-icon" />
+                <DrawerInfoItem>
+                  <DrawerIcon>
+                    <Scale size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Peso</span>
-                    <span className="drawer-value">
-                      {selectedCharacter.mass} kg
-                    </span>
+                    <DrawerLabel>Peso</DrawerLabel>
+                    <DrawerValue>{selectedCharacter.mass} kg</DrawerValue>
                   </div>
-                </div>
+                </DrawerInfoItem>
 
-                <div className="drawer-info-item">
-                  <User size={16} className="drawer-icon" />
+                <DrawerInfoItem>
+                  <DrawerIcon>
+                    <User size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Cabelo</span>
-                    <span className="drawer-value">
-                      {selectedCharacter.hair_color}
-                    </span>
+                    <DrawerLabel>Cabelo</DrawerLabel>
+                    <DrawerValue>{selectedCharacter.hair_color}</DrawerValue>
                   </div>
-                </div>
+                </DrawerInfoItem>
 
-                <div className="drawer-info-item">
-                  <Palette size={16} className="drawer-icon" />
+                <DrawerInfoItem>
+                  <DrawerIcon>
+                    <Palette size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Pele</span>
-                    <span className="drawer-value">
-                      {selectedCharacter.skin_color}
-                    </span>
+                    <DrawerLabel>Pele</DrawerLabel>
+                    <DrawerValue>{selectedCharacter.skin_color}</DrawerValue>
                   </div>
-                </div>
+                </DrawerInfoItem>
 
-                <div className="drawer-info-item">
-                  <Eye size={16} className="drawer-icon" />
+                <DrawerInfoItem>
+                  <DrawerIcon>
+                    <Eye size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Olhos</span>
-                    <span className="drawer-value">
-                      {selectedCharacter.eye_color}
-                    </span>
+                    <DrawerLabel>Olhos</DrawerLabel>
+                    <DrawerValue>{selectedCharacter.eye_color}</DrawerValue>
                   </div>
-                </div>
-              </div>
-            </div>
+                </DrawerInfoItem>
+              </DrawerInfoGrid>
+            </DrawerBlock>
 
-            <div className="divider" />
+            <Divider />
 
             {/* === Identidade === */}
-            <div className="drawer-block">
-              <h3 className="drawer-block-title">
+            <DrawerBlock>
+              <DrawerBlockTitle>
                 <Badge size={18} /> Identidade
-              </h3>
+              </DrawerBlockTitle>
 
-              <div className="drawer-info-grid">
-                <div className="drawer-info-item">
-                  <Calendar size={16} className="drawer-icon" />
+              <DrawerInfoGrid>
+                <DrawerInfoItem>
+                  <DrawerIcon>
+                    <Calendar size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Nascimento</span>
-                    <span className="drawer-value">
-                      {selectedCharacter.birth_year}
-                    </span>
+                    <DrawerLabel>Nascimento</DrawerLabel>
+                    <DrawerValue>{selectedCharacter.birth_year}</DrawerValue>
                   </div>
-                </div>
+                </DrawerInfoItem>
 
-                <div className="drawer-info-item">
-                  <Users size={16} className="drawer-icon" />
+                <DrawerInfoItem>
+                  <DrawerIcon>
+                    <Users size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Gênero</span>
-                    <span className="drawer-value">
-                      {selectedCharacter.gender}
-                    </span>
+                    <DrawerLabel>Gênero</DrawerLabel>
+                    <DrawerValue>{selectedCharacter.gender}</DrawerValue>
                   </div>
-                </div>
+                </DrawerInfoItem>
 
-                <div className="drawer-info-item" data-testid="homeworld">
-                  <Globe size={16} className="drawer-icon" />
+                <DrawerInfoItem data-testid="homeworld">
+                  <DrawerIcon>
+                    <Globe size={16} />
+                  </DrawerIcon>
                   <div>
-                    <span className="drawer-label">Mundo Natal</span>
-                    <span className="drawer-value">
+                    <DrawerLabel>Mundo Natal</DrawerLabel>
+                    <DrawerValue>
                       {resolvedHomeworld || "Desconhecido"}
-                    </span>
+                    </DrawerValue>
                   </div>
-                </div>
-              </div>
-            </div>
+                </DrawerInfoItem>
+              </DrawerInfoGrid>
+            </DrawerBlock>
 
-            <div className="divider" />
+            <Divider />
 
             {/* === Filmes === */}
-            <div className="drawer-block">
-              <h3 className="drawer-block-title">
+            <DrawerBlock>
+              <DrawerBlockTitle>
                 <Film size={18} /> Aparições em Filmes
-              </h3>
+              </DrawerBlockTitle>
               {resolvedFilms.length > 0 ? (
-                <ul className="drawer-list">
+                <DrawerList>
                   {resolvedFilms.map((f) => (
-                    <li key={f} className="drawer-list-item">
-                      <Film size={14} className="list-icon" />
+                    <DrawerListItem key={f}>
+                      <ListIcon>
+                        <Film size={14} />
+                      </ListIcon>
                       {f}
-                    </li>
+                    </DrawerListItem>
                   ))}
-                </ul>
+                </DrawerList>
               ) : (
-                <p className="drawer-empty">Nenhum filme registrado</p>
+                <DrawerEmpty>Nenhum filme registrado</DrawerEmpty>
               )}
-            </div>
+            </DrawerBlock>
 
-            <div className="divider" />
+            <Divider />
 
             {/* === Veículos === */}
-            <div className="drawer-block">
-              <h3 className="drawer-block-title">
+            <DrawerBlock>
+              <DrawerBlockTitle>
                 <Car size={18} /> Veículos
-              </h3>
+              </DrawerBlockTitle>
               {resolvedVehicles.length ? (
-                <ul className="drawer-list">
+                <DrawerList>
                   {resolvedVehicles.map((v) => (
-                    <li key={v} className="drawer-list-item">
-                      <Car size={14} className="list-icon" />
+                    <DrawerListItem key={v}>
+                      <ListIcon>
+                        <Car size={14} />
+                      </ListIcon>
                       {v}
-                    </li>
+                    </DrawerListItem>
                   ))}
-                </ul>
+                </DrawerList>
               ) : (
-                <p className="drawer-empty">Nenhum veículo registrado</p>
+                <DrawerEmpty>Nenhum veículo registrado</DrawerEmpty>
               )}
-            </div>
+            </DrawerBlock>
 
-            <div className="divider" />
+            <Divider />
 
             {/* === Naves === */}
-            <div className="drawer-block">
-              <h3 className="drawer-block-title">
+            <DrawerBlock>
+              <DrawerBlockTitle>
                 <Ship size={18} /> Naves Espaciais
-              </h3>
+              </DrawerBlockTitle>
               {resolvedStarships.length ? (
-                <ul className="drawer-list">
+                <DrawerList>
                   {resolvedStarships.map((s) => (
-                    <li key={s} className="drawer-list-item">
-                      <Ship size={14} className="list-icon" />
+                    <DrawerListItem key={s}>
+                      <ListIcon>
+                        <Ship size={14} />
+                      </ListIcon>
                       {s}
-                    </li>
+                    </DrawerListItem>
                   ))}
-                </ul>
+                </DrawerList>
               ) : (
-                <p className="drawer-empty">Nenhuma nave registrada</p>
+                <DrawerEmpty>Nenhuma nave registrada</DrawerEmpty>
               )}
-            </div>
+            </DrawerBlock>
 
-            <div className="divider" />
+            <Divider />
 
             {/* === Espécies === */}
-            <div className="drawer-block">
-              <h3 className="drawer-block-title">
+            <DrawerBlock>
+              <DrawerBlockTitle>
                 <Users size={18} /> Espécies
-              </h3>
+              </DrawerBlockTitle>
               {resolvedSpecies.length ? (
-                <ul className="drawer-list">
+                <DrawerList>
                   {resolvedSpecies.map((sp) => (
-                    <li key={sp} className="drawer-list-item">
-                      <Sparkles size={14} className="list-icon" />
+                    <DrawerListItem key={sp}>
+                      <ListIcon>
+                        <Sparkles size={14} />
+                      </ListIcon>
                       {sp}
-                    </li>
+                    </DrawerListItem>
                   ))}
-                </ul>
+                </DrawerList>
               ) : (
-                <p className="drawer-empty">Humano (padrão)</p>
+                <DrawerEmpty>Humano (padrão)</DrawerEmpty>
               )}
-            </div>
+            </DrawerBlock>
 
-            <div className="divider" />
+            <Divider />
 
             {/* === Timeline === */}
-            <div className="drawer-block">
-              <h3 className="drawer-block-title">
+            <DrawerBlock>
+              <DrawerBlockTitle>
                 <Clock size={18} />
                 Histórico de Registros
-              </h3>
-              <Timeline className="custom-timeline">
+              </DrawerBlockTitle>
+              <CustomTimeline className="custom-timeline">
                 <Timeline.Item color="blue">
                   <strong>Criado em:</strong>
                   <br />
-                  <span className="timeline-date">
+                  <TimelineDate>
                     {new Date(selectedCharacter.created).toLocaleDateString(
                       "pt-BR"
                     )}
-                  </span>
+                  </TimelineDate>
                 </Timeline.Item>
                 <Timeline.Item color="purple">
                   <strong>Última atualização:</strong>
                   <br />
-                  <span className="timeline-date">
+                  <TimelineDate>
                     {new Date(selectedCharacter.edited).toLocaleDateString(
                       "pt-BR"
                     )}
-                  </span>
+                  </TimelineDate>
                 </Timeline.Item>
-              </Timeline>
-            </div>
-          </animated.div>
+              </CustomTimeline>
+            </DrawerBlock>
+          </DrawerContent>
         )}
-      </Drawer>
-    </div>
+      </StyledDrawer>
+    </CharacterListContainer>
   );
 }
+
+const CharacterListContainer = styled.div`
+  width: 100%;
+`;
+
+const SearchSection = styled.section``;
+
+const ResultsInfo = styled.div`
+  text-align: center;
+  margin-top: 16px;
+`;
+
+const ResultsCount = styled.p`
+  color: var(--text-900);
+  font-size: 0.95rem;
+  margin: 0;
+  opacity: 0.7;
+
+  strong {
+    color: var(--accent-700);
+    font-weight: 600;
+    opacity: 1;
+  }
+`;
+
+const CharactersGrid = styled(Row)`
+  margin-bottom: 40px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 600px) {
+    display: block;
+
+    .ant-col {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+  }
+`;
+
+const EmptyState = styled.div`
+  padding: 80px 20px;
+  text-align: center;
+  background: var(--gray-50);
+  border-radius: var(--radius-xl);
+  margin: 40px 0;
+`;
+
+const StyledCard = styled(Card)`
+  &.character-card {
+    height: 340px;
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    border: 2px solid var(--gray-200);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    color: var(--text-900);
+    display: flex;
+    flex-direction: column;
+
+    &:hover {
+      border-color: var(--accent-700);
+      box-shadow: 0 8px 24px rgba(132, 74, 255, 0.2);
+      transform: translateY(-4px);
+    }
+
+    .ant-card-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      padding: 16px;
+      background: var(--white);
+      color: var(--text-900);
+    }
+
+    .ant-card-actions {
+      border-top: none;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      background: var(--gray-50);
+      border-top: 2px solid var(--gray-200);
+    }
+
+    @media (max-width: 600px) {
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+      .ant-card-actions {
+        padding: 12px;
+      }
+    }
+  }
+`;
+
+const CardHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--gray-100);
+
+  @media (max-width: 600px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+`;
+
+const CardAvatar = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-700), var(--button));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  box-shadow: var(--shadow-md);
+
+  @media (max-width: 600px) {
+    width: 48px;
+    height: 48px;
+  }
+`;
+
+const CardTitle = styled.h3`
+  font-family: var(--body-font);
+  color: var(--accent-700);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin: 0;
+  text-align: center;
+  line-height: 1.3;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    text-align: left;
+    font-size: 1.1rem;
+  }
+`;
+
+const CardContent = styled.div`
+  padding: 8px 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const CardInfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 8px;
+  background: var(--gray-50);
+  border-radius: var(--radius-sm);
+  color: var(--text-900);
+
+  svg {
+    color: var(--accent-700);
+    flex-shrink: 0;
+  }
+`;
+
+const InfoLabel = styled.span`
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: 0.9rem;
+`;
+
+const InfoValue = styled.span`
+  margin-left: auto;
+  color: var(--text-900);
+  font-weight: 500;
+`;
+
+const CardTags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+`;
+
+const CustomTag = styled(Tag)`
+  &.custom-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+`;
+
+const DetailsButton = styled(Button)`
+  &.details-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    width: 100%;
+    justify-content: center;
+  }
+`;
+
+const PaginationWrapper = styled.div`
+  margin-top: 48px;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200);
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+`;
+
+const StyledDrawer = styled(Drawer)`
+  .ant-drawer-body {
+    background: var(--white);
+    color: var(--text-900);
+    font-family: var(--body-font);
+    padding: 24px;
+  }
+
+  .ant-drawer-header {
+    background: var(--white);
+    border-bottom: 2px solid var(--gray-200);
+  }
+
+  .ant-drawer-title {
+    color: var(--text-900);
+  }
+`;
+
+const DrawerHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-700);
+`;
+
+const DrawerContent = styled(animated.div)`
+  padding-bottom: 20px;
+`;
+
+const DrawerBlock = styled.div`
+  margin-bottom: 24px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: var(--gray-50);
+  border: 2px solid var(--gray-200);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--accent-700);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+`;
+
+const DrawerBlockTitle = styled.h3`
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-family: var(--body-font);
+  color: var(--accent-700);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--gray-200);
+`;
+
+const DrawerInfoGrid = styled.div`
+  display: grid;
+  gap: 12px;
+`;
+
+const DrawerInfoItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  color: var(--text-900);
+`;
+
+const DrawerIcon = styled.div`
+  color: var(--button);
+  flex-shrink: 0;
+`;
+
+const DrawerLabel = styled.span`
+  display: block;
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  font-weight: 600;
+`;
+
+const DrawerValue = styled.span`
+  display: block;
+  font-size: 1rem;
+  color: var(--text-900);
+  font-weight: 500;
+  margin-top: 2px;
+`;
+
+const DrawerList = styled.ul`
+  padding-left: 0;
+  list-style: none;
+  margin: 8px 0 0;
+`;
+
+const DrawerListItem = styled.li`
+  margin: 8px 0;
+  padding: 10px 12px;
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--button);
+  color: var(--text-900);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--gray-100);
+    transform: translateX(4px);
+  }
+`;
+
+const ListIcon = styled.div`
+  color: var(--accent-700);
+  flex-shrink: 0;
+`;
+
+const DrawerEmpty = styled.p`
+  color: var(--gray-500);
+  font-style: italic;
+  margin: 8px 0 0;
+  padding: 12px;
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  text-align: center;
+`;
+
+const Divider = styled.div`
+  margin: 20px 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--accent-700),
+    transparent
+  );
+  opacity: 0.3;
+`;
+
+const CustomTimeline = styled(Timeline)`
+  &.custom-timeline {
+    margin: 16px 0 0 12px;
+  }
+`;
+
+const TimelineDate = styled.span`
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  margin-top: 4px;
+`;
