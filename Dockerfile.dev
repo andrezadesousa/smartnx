@@ -1,12 +1,18 @@
-FROM node:18
+FROM node:18-alpine
 
 WORKDIR /app
 
+# Copiar package files
 COPY package*.json ./
+
+# Instalar dependências (incluindo dev dependencies)
 RUN npm install
 
+# Copiar código-fonte
 COPY . .
 
+# Expor porta do dev server
 EXPOSE 3000
 
+# Iniciar dev server
 CMD ["npm", "start"]

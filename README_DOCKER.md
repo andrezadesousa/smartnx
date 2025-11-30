@@ -19,8 +19,10 @@ Você deve possuir exatamente estes arquivos na raiz:
 ```bash
 /
 ├── Dockerfile               # Build final (produção + Nginx)
-├── dockerfile.dev           # Ambiente de desenvolvimento (Node)
+├── Dockerfile.dev           # Ambiente de desenvolvimento (Node)
 ├── docker-compose.yml       # Orquestração do ambiente dev
+├── .dockerignore            # Arquivos ignorados no build
+├── nginx.conf               # Configuração do Nginx para produção
 ├── package.json
 ├── README_DOCKER.md         # este arquivo
 └── src/ ...
@@ -119,16 +121,22 @@ docker run -p 3000:80 swapi-react
 
 ## 6. Rodando Testes Dentro do Docker
 
-Rodar testes Jest:
+Rodar testes Jest (modo interativo):
 
 ```bash
 docker-compose exec web npm test
 ```
 
-Modo watch:
+Rodar todos os testes uma vez:
 
 ```bash
-docker-compose exec web npm test -- --watch
+docker-compose exec web npm test -- --watchAll=false
+```
+
+Rodar testes com cobertura:
+
+```bash
+docker-compose exec web npm test -- --coverage --watchAll=false
 ```
 
 ---
@@ -146,27 +154,57 @@ docker system prune -af
 ```bash
 /swapi-react
  ├── Dockerfile
- ├── dockerfile.dev
+ ├── Dockerfile.dev
  ├── docker-compose.yml
+ ├── .dockerignore
  ├── README_DOCKER.md
  ├── package.json
  ├── tsconfig.json
+ ├── webpack.config.js
  ├── public/
  └── src/
+      ├── __tests__/
       ├── api/
       ├── components/
+      ├── context/
       ├── hooks/
+      ├── themes/
+      │   ├── index.ts
+      │   └── style.css
       ├── types/
       ├── utils/
-      ├── __tests__/
       ├── App.tsx
       ├── index.tsx
-      ├── theme.css
+      └── setupTests.ts
 ```
 
 ---
 
-## 9. Fluxo Completo (Resumo Final)
+## 9. Tecnologias e Dependências Utilizadas
+
+### Frontend
+
+- **React 17** com TypeScript
+- **Ant Design 4** para componentes UI
+- **Styled Components 6** para estilização
+- **Lucide React** para ícones
+- **React Spring** para animações
+
+### Testes
+
+- **Jest** com Testing Library
+- Cobertura de testes unitários
+- Testes de integração
+
+### Docker
+
+- **Node 18** Alpine (desenvolvimento)
+- **Nginx** Alpine (produção)
+- Docker Compose para orquestração
+
+---
+
+## 10. Fluxo Completo (Resumo Final)
 
 DEV
 
