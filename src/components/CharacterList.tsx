@@ -19,8 +19,6 @@ import {
 import { fetchCharacters } from "../api/swapi";
 import type { Character } from "../types";
 import { fetchResourceName } from "../utils/fetchResourceName";
-
-// ⭐ Lucide Icons
 import {
   User,
   Globe,
@@ -37,37 +35,35 @@ import {
   Clock,
   Users,
   Shapes,
-  SearchIcon,
 } from "lucide-react";
 import { animated, useSpring } from "@react-spring/web";
 import useIsMobile from "../hooks/useIsMobile";
 
-const { Search } = Input;
+interface CharacterListProps {
+  searchQuery: string;
+  onLoadingChange?: (loading: boolean) => void;
+}
 
-export default function CharacterList() {
+export default function CharacterList({
+  searchQuery,
+  onLoadingChange,
+}: CharacterListProps) {
   const [data, setData] = useState<Character[]>([]);
   const [loading, setLoading] = useState(false);
   const [drawerLoading, setDrawerLoading] = useState(false);
-
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [searchText, setSearchText] = useState("");
-
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
     null
   );
-
   const isMobile = useIsMobile(600);
-
   const [resolvedHomeworld, setResolvedHomeworld] = useState("");
   const [resolvedFilms, setResolvedFilms] = useState<string[]>([]);
   const [resolvedSpecies, setResolvedSpecies] = useState<string[]>([]);
   const [resolvedVehicles, setResolvedVehicles] = useState<string[]>([]);
   const [resolvedStarships, setResolvedStarships] = useState<string[]>([]);
-
   const pageSize = 10;
-
   const cardAnimation = useSpring({
     from: { opacity: 0, transform: "translateY(20px)" },
     to: { opacity: 1, transform: "translateY(0px)" },
@@ -75,11 +71,16 @@ export default function CharacterList() {
   });
 
   useEffect(() => {
-    load(page, searchText);
-  }, [page, searchText]);
+    setPage(1);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    load(page, searchQuery);
+  }, [page, searchQuery]);
 
   async function load(p = 1, search = "") {
     setLoading(true);
+    if (onLoadingChange) onLoadingChange(true);
     try {
       const res = await fetchCharacters(p, search);
       setData(res.results);
@@ -88,6 +89,7 @@ export default function CharacterList() {
       console.error(err);
     } finally {
       setLoading(false);
+      if (onLoadingChange) onLoadingChange(false);
     }
   }
 
@@ -147,14 +149,12 @@ export default function CharacterList() {
     loadData();
   }, [selectedCharacter]);
 
-  // ⭐ ANIMAÇÃO: Fade + Slide Up (Drawer Content)
   const drawerAnimation = useSpring({
     opacity: drawerOpen ? 1 : 0,
     transform: drawerOpen ? "translateY(0px)" : "translateY(20px)",
     config: { tension: 220, friction: 22 },
   });
 
-  // ⭐ ANIMAÇÃO: Fade-in da grid após loading
   const gridAnimation = useSpring({
     opacity: loading ? 0 : 1,
     transform: loading ? "translateY(10px)" : "translateY(0)",
@@ -163,40 +163,7 @@ export default function CharacterList() {
 
   return (
     <div className="character-list-container">
-      <section className="hero-section">
-        <div className="hero-content">
-          <h2 className="hero-title">
-            <Sparkles size={32} className="hero-icon" />
-            Explore os Personagens
-          </h2>
-          <p className="hero-description">
-            Descubra informações detalhadas sobre os personagens icônicos da
-            saga Star Wars
-          </p>
-        </div>
-      </section>
-
       <section className="search-section">
-        <div className="search-wrapper">
-          <SearchIcon size={20} className="search-icon-prefix" />
-          <Search
-            // placeholder="Digite o nome do personagem..."
-            enterButton="Buscar"
-            allowClear
-            size="large"
-            value={searchText}
-            onChange={(e) => {
-              setSearchText(e.target.value);
-              setPage(1);
-            }}
-            onSearch={(value) => {
-              setSearchText(value.trim());
-              setPage(1);
-            }}
-            className="search-input-enhanced"
-          />
-        </div>
-
         {!loading && (
           <div className="results-info">
             <p className="results-count">
@@ -214,7 +181,6 @@ export default function CharacterList() {
         )}
       </section>
 
-      {/* SKELETON */}
       {loading && (
         <Row gutter={[24, 24]} className="characters-grid">
           {Array.from({ length: 10 }).map((_, i) => (
