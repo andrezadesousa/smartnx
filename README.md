@@ -35,22 +35,28 @@ Uma aplicação React moderna e responsiva que lista personagens do universo Sta
 
 ```
 src/
+├── __tests__/
 ├── api/
 │ └── swapi.ts # Cliente da API SWAPI
 ├── components/
 │ └── CharacterList.tsx # Componente principal de listagem
+| └── Footer.tsx
+| └── Header.tsx
+| └── Hero.tsx
+├── context/
+│ └── uThemeContext.tsx
 ├── hooks/
 │ └── useUsMobile.ts # Hook para detecção de mobile
+├── themes/
+│ └── index.ts
+│ └── style.css
 ├── types/
 │ └── Character.ts # Interfaces TypeScript
+│ └── Cindex.tsx
+│ └── styled.d.ts
 ├── utils/
 │ └── fetchResourceName.ts # Utilitário para resolver URLs
-├── **tests**/ # Testes unitários
-│ ├── CharacterList.test.tsx
-│ ├── useIsMobile.test.ts
-│ └── fetchResourceName.test.ts
 ├── App.tsx # Componente raiz
-├── theme.css # Design System completo
 └── index.tsx # Entrada da aplicação
 ```
 
