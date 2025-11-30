@@ -7,7 +7,7 @@ const Footer = () => {
         <FooterTitle>Star Wars - SWAPI</FooterTitle>
         <FooterText>© 2025 Andreza Sousa - Teste de Front-end Jr</FooterText>
         <FooterText>
-          Desenvolvido com React, TypeScript e Styled Components
+          Desenvolvido com React, TypeScript, Ant Design e Styled Components
         </FooterText>
         <FooterLinks>
           <FooterLink
