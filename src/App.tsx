@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import CharacterList from "./components/CharacterList";
+import Hero from "./components/Hero";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "antd/dist/antd.css";
@@ -44,6 +45,18 @@ function App() {
           text: "#000000",
         };
   });
+
+  // Estado de busca
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+
+  // Handlers para Hero
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+  const handleReset = () => {
+    setSearchQuery("");
+  };
 
   const handleCustomColorsChange = (colors: {
     primary: string;
@@ -89,7 +102,17 @@ function App() {
           onCustomColorsChange={handleCustomColorsChange}
         />
         <main className="main-content">
-          <CharacterList />
+          <Hero
+            thumbnailUrl={null}
+            onSearch={handleSearch}
+            onReset={handleReset}
+            isSearching={isSearching}
+            themeName={theme}
+          />
+          <CharacterList
+            searchQuery={searchQuery}
+            onLoadingChange={setIsSearching}
+          />
         </main>
         <Footer />
       </div>
