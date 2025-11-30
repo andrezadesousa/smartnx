@@ -103,11 +103,9 @@ function App() {
         />
         <main className="main-content">
           <Hero
-            thumbnailUrl={null}
             onSearch={handleSearch}
             onReset={handleReset}
             isSearching={isSearching}
-            themeName={theme}
           />
           <CharacterList
             searchQuery={searchQuery}
